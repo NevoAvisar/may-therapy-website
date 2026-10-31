@@ -96,6 +96,9 @@
 
   /* =========================================================
      2. The scroll journey
+     The stage is position: sticky; the empty .journey-track
+     below it supplies the scroll distance the camera plays over,
+     then the roots content (FAQ + contact) scrolls up over it.
      ========================================================= */
   let journeyTrigger = null;
 
@@ -135,59 +138,68 @@
       gsap.from('.scroll-cue', { opacity: 0, duration: 1, delay: 1.1 });
 
       const items = gsap.utils.toArray('.bento-item');
-      const contactItems = gsap.utils.toArray('.contact-card > :not(.spotlight)');
 
       const tl = gsap.timeline({
         defaults: { ease: 'none' },
         scrollTrigger: {
-          trigger: '.journey',
-          start: 'top top',
-          end: c.isDesktop ? '+=3600' : '+=2800',
-          pin: true,
+          trigger: '.journey-track',
+          start: 'top bottom',
+          end: 'bottom bottom',
           scrub: 1,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-          onUpdate: function (self) { setActiveNav(self.progress); }
+          invalidateOnRefresh: true
         }
       });
       journeyTrigger = tl.scrollTrigger;
 
-      /* Phase 1 — Canopy (0 → 25): slow breathing drift */
-      tl.fromTo(photo, camera('canopy'), Object.assign(camera('canopy', { zoom: 1.04, dy: 0.03 }), { duration: 25 }), 0)
-        .to('.scroll-cue', { opacity: 0, y: 16, duration: 8 }, 4)
-        .fromTo('.light-sun', { opacity: 1 }, { opacity: 0.85, duration: 25 }, 0);
+      /* Ambient light ray: drifts across the whole descent, gold → sage */
+      tl.fromTo('.light-ray', { xPercent: 0, yPercent: 0, rotate: 0 }, { xPercent: -16, yPercent: 26, rotate: 7, duration: 100 }, 0)
+        .fromTo('.ray-gold', { opacity: 1 }, { opacity: 0.2, duration: 100 }, 0)
+        .fromTo('.ray-sage', { opacity: 0.1 }, { opacity: 1, duration: 100 }, 0);
 
-      /* Phase 2 — Trunk & bento (25 → 65) */
-      tl.to('.panel-hero', { autoAlpha: 0, y: -60, duration: 10, ease: 'power1.in' }, 25)
-        .to('.shade-hero', { opacity: 0, duration: 12 }, 25)
-        .to('.light-sun', { opacity: 0.35, duration: 22 }, 25)
-        .to(photo, Object.assign(camera('trunk'), { duration: 22, ease: 'power2.inOut' }), 25)
-        .to('.shade-trunk', { opacity: 1, duration: 12 }, 32)
-        .set('.panel-trunk', { autoAlpha: 1 }, 38)
+      /* Phase 1 — Canopy (0 → 28): slow breathing drift through the mist */
+      tl.fromTo(photo, camera('canopy'), Object.assign(camera('canopy', { zoom: 1.04, dy: 0.03 }), { duration: 28 }), 0)
+        .to('.scroll-cue', { opacity: 0, y: 16, duration: 8 }, 4)
+        .to('.mist', { y: -40, duration: 28 }, 0)
+        .fromTo('.light-sun', { opacity: 1 }, { opacity: 0.85, duration: 28 }, 0);
+
+      /* Phase 2 — Trunk & bento (28 → 68): periphery falls out of focus */
+      tl.to('.panel-hero', { autoAlpha: 0, y: -60, duration: 10, ease: 'power1.in' }, 28)
+        .fromTo(['.hero-title', '.hero-tagline'], { filter: 'blur(0px)' }, { filter: 'blur(8px)', duration: 10, ease: 'power1.in' }, 28)
+        .to('.mist', { opacity: 0, duration: 12 }, 28)
+        .to('.shade-hero', { opacity: 0, duration: 12 }, 28)
+        .to('.light-sun', { opacity: 0.35, duration: 22 }, 28)
+        .to(photo, Object.assign(camera('trunk'), { duration: 22, ease: 'power2.inOut' }), 28)
+        .to('.shade-trunk', { opacity: 1, duration: 12 }, 34)
+        .fromTo('.dof', { opacity: 0 }, { opacity: 1, duration: 12, ease: 'power1.out' }, 36)
+        .set('.panel-trunk', { autoAlpha: 1 }, 40)
         .fromTo('.panel-trunk .panel-header > *',
           { opacity: 0, y: 28 },
-          { opacity: 1, y: 0, duration: 6, stagger: 1.5, ease: 'power2.out' }, 38)
+          { opacity: 1, y: 0, duration: 6, stagger: 1.5, ease: 'power2.out' }, 40)
         .fromTo(items,
           { opacity: 0, y: 70, rotateX: 10, scale: 0.96, transformOrigin: '50% 100%', transformPerspective: 900 },
-          { opacity: 1, y: 0, rotateX: 0, scale: 1, duration: 9, stagger: 2.5, ease: 'power2.out' }, 41)
-        .to(photo, { y: shot('trunk', 'y', { dy: 0.04 }), duration: 12 }, 53);
+          { opacity: 1, y: 0, rotateX: 0, scale: 1, duration: 9, stagger: 2.5, ease: 'power2.out' }, 43)
+        .to(photo, { y: shot('trunk', 'y', { dy: 0.04 }), duration: 12 }, 55);
 
-      /* Phase 3 — Roots & contact (65 → 100) */
-      tl.to(items, { opacity: 0, y: -60, duration: 7, stagger: 1, ease: 'power1.in' }, 65)
-        .to('.panel-trunk .panel-header', { opacity: 0, y: -40, duration: 6, ease: 'power1.in' }, 65)
-        .set('.panel-trunk', { autoAlpha: 0 }, 74)
-        .to('.shade-trunk', { opacity: 0, duration: 10 }, 68)
-        .to(photo, Object.assign(camera('roots'), { duration: 22, ease: 'power2.inOut' }), 66)
-        .to('.shade-roots', { opacity: 1, duration: 14 }, 72)
-        .to('.light-sun', { opacity: 0, duration: 14 }, 66)
-        .set('.panel-roots', { autoAlpha: 1 }, 77)
-        .fromTo('.contact-card',
-          { opacity: 0, y: 60, scale: 0.97 },
-          { opacity: 1, y: 0, scale: 1, duration: 8, ease: 'power2.out' }, 77)
-        .fromTo(contactItems,
-          { opacity: 0, y: 18 },
-          { opacity: 1, y: 0, duration: 5, stagger: 0.9, ease: 'power2.out' }, 79)
-        .to({}, { duration: 6 }, 94); // hold before the pin releases
+      /* Phase 3 — Descent to the roots (68 → 100) */
+      tl.to(items, { opacity: 0, y: -60, duration: 7, stagger: 1, ease: 'power1.in' }, 68)
+        .to('.panel-trunk .panel-header', { opacity: 0, y: -40, duration: 6, ease: 'power1.in' }, 68)
+        .set('.panel-trunk', { autoAlpha: 0 }, 77)
+        .to('.dof', { opacity: 0, duration: 12 }, 70)
+        .to('.shade-trunk', { opacity: 0, duration: 10 }, 71)
+        .to(photo, Object.assign(camera('roots'), { duration: 26, ease: 'power2.inOut' }), 70)
+        .to('.light-sun', { opacity: 0, duration: 14 }, 70)
+        .to('.shade-roots', { opacity: 1, duration: 18 }, 78);
+
+      /* Roots content rises into view */
+      gsap.utils.toArray('.reveal').forEach(function (el) {
+        gsap.from(el, {
+          y: 40,
+          opacity: 0,
+          duration: 1.1,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: el, start: 'top 90%', once: true }
+        });
+      });
 
       return function () { journeyTrigger = null; };
     });
@@ -198,11 +210,12 @@
   }
 
   /* =========================================================
-     3. Pill nav – sliding active indicator + pin-aware links
+     3. Pill nav – sliding active indicator + journey-aware links
      ========================================================= */
   const navLinks = document.querySelector('.nav-links');
   const indicator = document.querySelector('.nav-indicator');
-  let activeKey = null;
+  const navOffset = function () { return (document.getElementById('pillNav') || { offsetHeight: 0 }).offsetHeight + 28; };
+  let activeKey;
 
   function moveIndicator(link) {
     if (!indicator) return;
@@ -212,9 +225,8 @@
     indicator.style.opacity = '1';
   }
 
-  function setActiveNav(progress) {
-    const key = progress < 0.3 ? null : progress < 0.7 ? 'treatments' : 'about';
-    if (key === activeKey) return;
+  function setActiveNav(key) {
+    if (!navLinks || key === activeKey) return;
     activeKey = key;
     let current = null;
     navLinks.querySelectorAll('a').forEach(function (a) {
@@ -225,11 +237,27 @@
     moveIndicator(current);
   }
 
+  function topOf(id) {
+    const el = document.getElementById(id);
+    return el ? el.getBoundingClientRect().top : Infinity;
+  }
+
+  function updateActiveNav() {
+    const mid = window.innerHeight * 0.5;
+    let key = null;
+    if (topOf('contact') < mid) key = 'about';
+    else if (topOf('faq') < mid) key = 'faq';
+    else if (journeyTrigger) key = journeyTrigger.progress > 0.3 ? 'treatments' : null;
+    else if (topOf('treatments') < mid) key = 'treatments';
+    setActiveNav(key);
+  }
+
   window.addEventListener('resize', function () {
     moveIndicator(navLinks && navLinks.querySelector('a.is-active'));
   });
 
-  const STOPS = { '#journey': 0, '#treatments': 0.58, '#contact': 1, '#about': 1 };
+  // Points along the camera journey (0–1) for links that live inside the sticky stage
+  const STOPS = { '#journey': 0, '#treatments': 0.56 };
 
   function scrollTarget(hash) {
     if (journeyTrigger && hash in STOPS) {
@@ -237,7 +265,7 @@
       return st.start + (st.end - st.start) * STOPS[hash];
     }
     const el = document.querySelector(hash);
-    return el ? el.getBoundingClientRect().top + window.scrollY : null;
+    return el ? el.getBoundingClientRect().top + window.scrollY - navOffset() : null;
   }
 
   document.querySelectorAll('a[href^="#"]').forEach(function (link) {
@@ -279,7 +307,70 @@
   document.querySelectorAll('.contact-card').forEach(function (card) { bindSpotlight(card, false); });
 
   /* =========================================================
-     5. Contact links
+     5. FAQ accordion – one open at a time, height animated in CSS
+     ========================================================= */
+  const faqItems = Array.prototype.slice.call(document.querySelectorAll('.faq-item'));
+  let faqRefreshTimer;
+
+  function setFaq(item, open) {
+    const btn = item.querySelector('.faq-trigger');
+    item.classList.toggle('is-open', open);
+    btn.setAttribute('aria-expanded', String(open));
+  }
+
+  faqItems.forEach(function (item) {
+    const btn = item.querySelector('.faq-trigger');
+    btn.addEventListener('click', function () {
+      const open = btn.getAttribute('aria-expanded') !== 'true';
+      faqItems.forEach(function (other) { if (other !== item) setFaq(other, false); });
+      setFaq(item, open);
+    });
+
+    // Content below moved – let ScrollTrigger re-measure once the height settles
+    item.querySelector('.faq-panel').addEventListener('transitionend', function (e) {
+      if (e.propertyName !== 'grid-template-rows' || !hasGsap) return;
+      clearTimeout(faqRefreshTimer);
+      faqRefreshTimer = setTimeout(function () { ScrollTrigger.refresh(); }, 60);
+    });
+  });
+
+  /* =========================================================
+     6. Root scroll-progress – grows and branches as you descend
+     ========================================================= */
+  const rpMain = document.querySelector('.rp-main');
+  const rpTip = document.querySelector('.rp-tip');
+  const rpBranches = Array.prototype.slice.call(document.querySelectorAll('.rp-branch')).map(function (path) {
+    const len = path.getTotalLength();
+    path.style.strokeDasharray = len;
+    path.style.strokeDashoffset = len;
+    return { path: path, len: len, at: parseFloat(path.dataset.at) || 0 };
+  });
+  const rpLen = rpMain ? rpMain.getTotalLength() : 0;
+  if (rpMain) {
+    rpMain.style.strokeDasharray = rpLen;
+    rpMain.style.strokeDashoffset = rpLen;
+  }
+
+  function updateRootProgress() {
+    if (!rpMain) return;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const p = max > 0 ? clamp(window.scrollY / max, 0, 1) : 0;
+
+    rpMain.style.strokeDashoffset = rpLen * (1 - p);
+    rpMain.style.setProperty('--rp-w', (1.3 + p * 1.2).toFixed(2));
+    rpBranches.forEach(function (b) {
+      const d = clamp((p - b.at) / 0.1, 0, 1);
+      b.path.style.strokeDashoffset = b.len * (1 - d);
+    });
+    if (rpTip) {
+      const pt = rpMain.getPointAtLength(rpLen * p);
+      rpTip.setAttribute('cx', pt.x.toFixed(2));
+      rpTip.setAttribute('cy', pt.y.toFixed(2));
+    }
+  }
+
+  /* =========================================================
+     7. Contact links
      ========================================================= */
   const whatsappUrl =
     'https://wa.me/' + CONTACT.whatsappNumber.replace(/[\s+()-]/g, '') +
@@ -330,7 +421,7 @@
   });
 
   /* =========================================================
-     6. Nav background, floating button, footer year
+     8. Nav background, floating button, footer year
      ========================================================= */
   const year = document.getElementById('year');
   if (year) year.textContent = new Date().getFullYear();
@@ -343,18 +434,14 @@
     const y = window.scrollY;
     if (pillNav) pillNav.classList.toggle('is-scrolled', y > 24);
     if (fab) fab.classList.toggle('is-visible', y > window.innerHeight * 0.5);
-    if (!journeyTrigger) {
-      // Static mode: approximate active section from the panels' positions
-      const t = document.getElementById('treatments');
-      const c = document.getElementById('contact');
-      const mid = window.innerHeight / 2;
-      const p = c && c.getBoundingClientRect().top < mid ? 1 : t && t.getBoundingClientRect().top < mid ? 0.5 : 0;
-      setActiveNav(p);
-    }
+    updateActiveNav();
+    updateRootProgress();
     ticking = false;
   }
-  window.addEventListener('scroll', function () {
+  function requestTick() {
     if (!ticking) { window.requestAnimationFrame(onScroll); ticking = true; }
-  }, { passive: true });
+  }
+  window.addEventListener('scroll', requestTick, { passive: true });
+  window.addEventListener('resize', requestTick);
   onScroll();
 })();
