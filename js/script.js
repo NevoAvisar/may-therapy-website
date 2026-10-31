@@ -1,6 +1,8 @@
 /* =========================================================
-   May – Canopy → Trunk → Roots
-   GSAP + ScrollTrigger photographic camera · glass UI
+   May – Forest & Rivers
+   The right-side tree grows with the scroll (GSAP + ScrollTrigger):
+   trunk draws downwards → a branch sprouts and a blossom opens for
+   every section → at the finale the tree settles into roots & moss.
    ========================================================= */
 
 (function () {
@@ -10,404 +12,58 @@
   const CONTACT = {
     // International format, digits only, no "+" or leading 0 (e.g. 972501234567)
     whatsappNumber: '972XXXXXXXXX',
-    whatsappMessage: 'היי מאי 🌿 הגעתי דרך האתר ואשמח לשמוע עוד על הטיפולים ולתאם שיחת היכרות.',
+    whatsappMessage: 'היי מאי 🌿 הגעתי דרך האתר ואשמח לתאם מפגש.',
     email: 'may@example.com',
-    emailSubject: 'פנייה מהאתר – שאלה / תיאום טיפול',
-    emailBody: 'היי מאי,\n\nאשמח לשמוע פרטים נוספים על הטיפולים ולתאם שיחת היכרות.\n\nשם:\nטלפון:\n\nתודה!'
-  };
-
-  /* ---------- Camera framing – tune to your photo ----------
-     zoom – 1 = photo just covers the screen; higher = closer
-     x, y – point of the photo (0–1 across / down) to centre on
-     Top of the photo = canopy, middle = trunk, bottom = roots. */
-  const CAMERA = {
-    desktop: {
-      canopy: { zoom: 1.3,  x: 0.5, y: 0.3  },
-      trunk:  { zoom: 1.75, x: 0.5, y: 0.58 },
-      roots:  { zoom: 1.4,  x: 0.5, y: 0.9  }
-    },
-    mobile: {
-      canopy: { zoom: 1.1,  x: 0.5, y: 0.28 },
-      trunk:  { zoom: 1.45, x: 0.5, y: 0.56 },
-      roots:  { zoom: 1.2,  x: 0.5, y: 0.92 }
-    }
+    emailSubject: 'פנייה מהאתר – שאלה / תיאום מפגש',
+    emailBody: 'היי מאי,\n\nאשמח לשמוע פרטים נוספים ולתאם מפגש.\n\nשם:\nטלפון:\n\nתודה!'
   };
 
   const root = document.documentElement;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
   const hasGsap = typeof window.gsap !== 'undefined' && typeof window.ScrollTrigger !== 'undefined';
 
-  const frame = document.querySelector('.frame');
-  const photo = document.querySelector('.tree-photo');
-
-  /* =========================================================
-     1. Camera maths
-     ========================================================= */
-  const view = { W: 0, H: 0, w: 0, h: 0, max: 1 };
-  let shots = CAMERA.desktop;
+  const rail = document.querySelector('.tree-rail');
+  const trunk = document.querySelector('.trunk');
+  const trunkLight = document.querySelector('.trunk-light');
+  const tip = document.querySelector('.growth-tip');
+  const stages = Array.prototype.slice.call(document.querySelectorAll('.tree .stage'));
 
   function clamp(v, min, max) { return Math.min(max, Math.max(min, v)); }
-
-  function measure() {
-    if (!frame || !photo) return;
-    view.W = frame.clientWidth;
-    view.H = frame.clientHeight;
-    const nw = photo.naturalWidth || 1600;
-    const nh = photo.naturalHeight || 1400;
-    const cover = Math.max(view.W / nw, view.H / nh);
-    view.w = nw * cover;   // size when the photo just covers the screen
-    view.h = nh * cover;
-    // Lay the image out at the closest zoom we'll ever use, then only scale
-    // it down. Scaling down keeps every pixel crisp; scaling up would blur.
-    view.max = Math.max.apply(null, Object.keys(shots).map(function (k) { return shots[k].zoom; })) * 1.05;
-    photo.style.width = (view.w * view.max) + 'px';
-    photo.style.height = (view.h * view.max) + 'px';
-  }
-
-  // Returns a function so GSAP re-reads it on every refresh/resize
-  function shot(name, prop, nudge) {
-    return function () {
-      const s = shots[name];
-      const zoom = s.zoom * ((nudge && nudge.zoom) || 1);
-      const dw = view.w * zoom;
-      const dh = view.h * zoom;
-      if (prop === 'scale') return zoom / view.max;
-      if (prop === 'x') return clamp(view.W / 2 - s.x * dw, view.W - dw, 0);
-      const y = view.H / 2 - s.y * dh - view.H * ((nudge && nudge.dy) || 0);
-      return clamp(y, view.H - dh, 0);
-    };
-  }
-
-  function camera(name, nudge) {
-    return { scale: shot(name, 'scale', nudge), x: shot(name, 'x', nudge), y: shot(name, 'y', nudge) };
-  }
-
-  // Show a small hint while developing locally if the photo isn't there yet
-  function onPhotoMissing() {
-    const local = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname) || location.protocol === 'file:';
-    const notice = document.querySelector('.photo-notice');
-    if (local && notice) notice.hidden = false;
-  }
-  if (photo) {
-    if (photo.complete && !photo.naturalWidth) onPhotoMissing();
-    photo.addEventListener('error', onPhotoMissing);
+  function debounce(fn, ms) {
+    let t;
+    return function () { clearTimeout(t); t = setTimeout(fn, ms); };
   }
 
   /* =========================================================
-     2. The scroll journey
-     The stage is position: sticky; the empty .journey-track
-     below it supplies the scroll distance the camera plays over,
-     then the roots content (FAQ + contact) scrolls up over it.
+     1. Contact links
      ========================================================= */
-  let journeyTrigger = null;
-
-  function useStatic(on) { root.classList.toggle('is-static', on); }
-
-  if (!hasGsap || !photo) {
-    useStatic(true);
-  } else {
-    gsap.registerPlugin(ScrollTrigger);
-    ScrollTrigger.config({ ignoreMobileResize: true });
-    ScrollTrigger.addEventListener('refreshInit', measure);
-
-    measure();
-    gsap.config({ force3D: true });
-    photo.addEventListener('load', function () { ScrollTrigger.refresh(); });
-
-    const mm = gsap.matchMedia();
-
-    mm.add({
-      isDesktop: '(min-width: 768px) and (prefers-reduced-motion: no-preference)',
-      isMobile: '(max-width: 767px) and (prefers-reduced-motion: no-preference)',
-      reduce: '(prefers-reduced-motion: reduce)'
-    }, function (ctx) {
-      const c = ctx.conditions;
-
-      if (c.reduce) {
-        useStatic(true);
-        return function () { useStatic(false); };
-      }
-
-      shots = c.isDesktop ? CAMERA.desktop : CAMERA.mobile;
-      measure();
-
-      // Load-in (not scroll-linked)
-      gsap.from('.pill-nav', { y: -24, opacity: 0, duration: 1, ease: 'power3.out', delay: 0.1 });
-      gsap.from('.hero-inner > *', { y: 28, opacity: 0, duration: 1.2, stagger: 0.12, ease: 'power3.out', delay: 0.25 });
-      gsap.from('.scroll-cue', { opacity: 0, duration: 1, delay: 1.1 });
-
-      const items = gsap.utils.toArray('.bento-item');
-
-      const tl = gsap.timeline({
-        defaults: { ease: 'none' },
-        scrollTrigger: {
-          trigger: '.journey-track',
-          start: 'top bottom',
-          end: 'bottom bottom',
-          scrub: 1,
-          invalidateOnRefresh: true
-        }
-      });
-      journeyTrigger = tl.scrollTrigger;
-
-      /* Ambient light ray: drifts across the whole descent, gold → sage */
-      tl.fromTo('.light-ray', { xPercent: 0, yPercent: 0, rotate: 0 }, { xPercent: -16, yPercent: 26, rotate: 7, duration: 100 }, 0)
-        .fromTo('.ray-gold', { opacity: 1 }, { opacity: 0.2, duration: 100 }, 0)
-        .fromTo('.ray-sage', { opacity: 0.1 }, { opacity: 1, duration: 100 }, 0);
-
-      /* Phase 1 — Canopy (0 → 28): slow breathing drift through the mist */
-      tl.fromTo(photo, camera('canopy'), Object.assign(camera('canopy', { zoom: 1.04, dy: 0.03 }), { duration: 28 }), 0)
-        .to('.scroll-cue', { opacity: 0, y: 16, duration: 8 }, 4)
-        .to('.mist', { y: -40, duration: 28 }, 0)
-        .fromTo('.light-sun', { opacity: 1 }, { opacity: 0.85, duration: 28 }, 0);
-
-      /* Phase 2 — Trunk & bento (28 → 68): periphery falls out of focus */
-      tl.to('.panel-hero', { autoAlpha: 0, y: -60, duration: 10, ease: 'power1.in' }, 28)
-        .fromTo(['.hero-title', '.hero-tagline'], { filter: 'blur(0px)' }, { filter: 'blur(8px)', duration: 10, ease: 'power1.in' }, 28)
-        .to('.mist', { opacity: 0, duration: 12 }, 28)
-        .to('.shade-hero', { opacity: 0, duration: 12 }, 28)
-        .to('.light-sun', { opacity: 0.35, duration: 22 }, 28)
-        .to(photo, Object.assign(camera('trunk'), { duration: 22, ease: 'power2.inOut' }), 28)
-        .to('.shade-trunk', { opacity: 1, duration: 12 }, 34)
-        .fromTo('.dof', { opacity: 0 }, { opacity: 1, duration: 12, ease: 'power1.out' }, 36)
-        .set('.panel-trunk', { autoAlpha: 1 }, 40)
-        .fromTo('.panel-trunk .panel-header > *',
-          { opacity: 0, y: 28 },
-          { opacity: 1, y: 0, duration: 6, stagger: 1.5, ease: 'power2.out' }, 40)
-        .fromTo(items,
-          { opacity: 0, y: 70, rotateX: 10, scale: 0.96, transformOrigin: '50% 100%', transformPerspective: 900 },
-          { opacity: 1, y: 0, rotateX: 0, scale: 1, duration: 9, stagger: 2.5, ease: 'power2.out' }, 43)
-        .to(photo, { y: shot('trunk', 'y', { dy: 0.04 }), duration: 12 }, 55);
-
-      /* Phase 3 — Descent to the roots (68 → 100) */
-      tl.to(items, { opacity: 0, y: -60, duration: 7, stagger: 1, ease: 'power1.in' }, 68)
-        .to('.panel-trunk .panel-header', { opacity: 0, y: -40, duration: 6, ease: 'power1.in' }, 68)
-        .set('.panel-trunk', { autoAlpha: 0 }, 77)
-        .to('.dof', { opacity: 0, duration: 12 }, 70)
-        .to('.shade-trunk', { opacity: 0, duration: 10 }, 71)
-        .to(photo, Object.assign(camera('roots'), { duration: 26, ease: 'power2.inOut' }), 70)
-        .to('.light-sun', { opacity: 0, duration: 14 }, 70)
-        .to('.shade-roots', { opacity: 1, duration: 18 }, 78);
-
-      /* Roots content rises into view */
-      gsap.utils.toArray('.reveal').forEach(function (el) {
-        gsap.from(el, {
-          y: 40,
-          opacity: 0,
-          duration: 1.1,
-          ease: 'power3.out',
-          scrollTrigger: { trigger: el, start: 'top 90%', once: true }
-        });
-      });
-
-      return function () { journeyTrigger = null; };
-    });
-
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(function () { ScrollTrigger.refresh(); });
-    }
-  }
-
-  /* =========================================================
-     3. Pill nav – sliding active indicator + journey-aware links
-     ========================================================= */
-  const navLinks = document.querySelector('.nav-links');
-  const indicator = document.querySelector('.nav-indicator');
-  const navOffset = function () { return (document.getElementById('pillNav') || { offsetHeight: 0 }).offsetHeight + 28; };
-  let activeKey;
-
-  function moveIndicator(link) {
-    if (!indicator) return;
-    if (!link) { indicator.style.opacity = '0'; return; }
-    indicator.style.width = link.offsetWidth + 'px';
-    indicator.style.transform = 'translateX(' + link.offsetLeft + 'px)';
-    indicator.style.opacity = '1';
-  }
-
-  function setActiveNav(key) {
-    if (!navLinks || key === activeKey) return;
-    activeKey = key;
-    let current = null;
-    navLinks.querySelectorAll('a').forEach(function (a) {
-      const on = a.dataset.nav === key;
-      a.classList.toggle('is-active', on);
-      if (on) { a.setAttribute('aria-current', 'true'); current = a; } else { a.removeAttribute('aria-current'); }
-    });
-    moveIndicator(current);
-  }
-
-  function topOf(id) {
-    const el = document.getElementById(id);
-    return el ? el.getBoundingClientRect().top : Infinity;
-  }
-
-  function updateActiveNav() {
-    const mid = window.innerHeight * 0.5;
-    let key = null;
-    if (topOf('contact') < mid) key = 'about';
-    else if (topOf('faq') < mid) key = 'faq';
-    else if (journeyTrigger) key = journeyTrigger.progress > 0.3 ? 'treatments' : null;
-    else if (topOf('treatments') < mid) key = 'treatments';
-    setActiveNav(key);
-  }
-
-  window.addEventListener('resize', function () {
-    moveIndicator(navLinks && navLinks.querySelector('a.is-active'));
-  });
-
-  // Points along the camera journey (0–1) for links that live inside the sticky stage
-  const STOPS = { '#journey': 0, '#treatments': 0.56 };
-
-  function scrollTarget(hash) {
-    if (journeyTrigger && hash in STOPS) {
-      const st = journeyTrigger;
-      return st.start + (st.end - st.start) * STOPS[hash];
-    }
-    const el = document.querySelector(hash);
-    return el ? el.getBoundingClientRect().top + window.scrollY - navOffset() : null;
-  }
-
-  document.querySelectorAll('a[href^="#"]').forEach(function (link) {
-    link.addEventListener('click', function (e) {
-      const hash = link.getAttribute('href');
-      if (hash.length < 2) return;
-      const top = scrollTarget(hash);
-      if (top === null) return;
-      e.preventDefault();
-      window.scrollTo({ top: Math.max(0, top), behavior: reduceMotion.matches ? 'auto' : 'smooth' });
-    });
-  });
-
-  /* =========================================================
-     4. Card tilt + cursor spotlight (mouse / trackpad only)
-     ========================================================= */
-  function bindSpotlight(el, tilt) {
-    el.addEventListener('pointermove', function (e) {
-      if (!finePointer.matches) return;
-      const r = el.getBoundingClientRect();
-      const px = (e.clientX - r.left) / r.width;
-      const py = (e.clientY - r.top) / r.height;
-      el.style.setProperty('--mx', (px * 100).toFixed(1) + '%');
-      el.style.setProperty('--my', (py * 100).toFixed(1) + '%');
-      if (tilt && !reduceMotion.matches) {
-        el.classList.add('is-tilting');
-        el.style.setProperty('--rx', ((0.5 - py) * 7).toFixed(2) + 'deg');
-        el.style.setProperty('--ry', ((px - 0.5) * 9).toFixed(2) + 'deg');
-      }
-    });
-    el.addEventListener('pointerleave', function () {
-      el.classList.remove('is-tilting');
-      el.style.setProperty('--rx', '0deg');
-      el.style.setProperty('--ry', '0deg');
-    });
-  }
-
-  document.querySelectorAll('.bento-card').forEach(function (card) { bindSpotlight(card, true); });
-  document.querySelectorAll('.contact-card').forEach(function (card) { bindSpotlight(card, false); });
-
-  /* =========================================================
-     5. FAQ accordion – one open at a time, height animated in CSS
-     ========================================================= */
-  const faqItems = Array.prototype.slice.call(document.querySelectorAll('.faq-item'));
-  let faqRefreshTimer;
-
-  function setFaq(item, open) {
-    const btn = item.querySelector('.faq-trigger');
-    item.classList.toggle('is-open', open);
-    btn.setAttribute('aria-expanded', String(open));
-  }
-
-  faqItems.forEach(function (item) {
-    const btn = item.querySelector('.faq-trigger');
-    btn.addEventListener('click', function () {
-      const open = btn.getAttribute('aria-expanded') !== 'true';
-      faqItems.forEach(function (other) { if (other !== item) setFaq(other, false); });
-      setFaq(item, open);
-    });
-
-    // Content below moved – let ScrollTrigger re-measure once the height settles
-    item.querySelector('.faq-panel').addEventListener('transitionend', function (e) {
-      if (e.propertyName !== 'grid-template-rows' || !hasGsap) return;
-      clearTimeout(faqRefreshTimer);
-      faqRefreshTimer = setTimeout(function () { ScrollTrigger.refresh(); }, 60);
-    });
-  });
-
-  /* =========================================================
-     6. Root scroll-progress – grows and branches as you descend
-     ========================================================= */
-  const rpMain = document.querySelector('.rp-main');
-  const rpTip = document.querySelector('.rp-tip');
-  const rpBranches = Array.prototype.slice.call(document.querySelectorAll('.rp-branch')).map(function (path) {
-    const len = path.getTotalLength();
-    path.style.strokeDasharray = len;
-    path.style.strokeDashoffset = len;
-    return { path: path, len: len, at: parseFloat(path.dataset.at) || 0 };
-  });
-  const rpLen = rpMain ? rpMain.getTotalLength() : 0;
-  if (rpMain) {
-    rpMain.style.strokeDasharray = rpLen;
-    rpMain.style.strokeDashoffset = rpLen;
-  }
-
-  function updateRootProgress() {
-    if (!rpMain) return;
-    const max = document.documentElement.scrollHeight - window.innerHeight;
-    const p = max > 0 ? clamp(window.scrollY / max, 0, 1) : 0;
-
-    rpMain.style.strokeDashoffset = rpLen * (1 - p);
-    rpMain.style.setProperty('--rp-w', (1.3 + p * 1.2).toFixed(2));
-    rpBranches.forEach(function (b) {
-      const d = clamp((p - b.at) / 0.1, 0, 1);
-      b.path.style.strokeDashoffset = b.len * (1 - d);
-    });
-    if (rpTip) {
-      const pt = rpMain.getPointAtLength(rpLen * p);
-      rpTip.setAttribute('cx', pt.x.toFixed(2));
-      rpTip.setAttribute('cy', pt.y.toFixed(2));
-    }
-  }
-
-  /* =========================================================
-     7. Contact links
-     ========================================================= */
-  const whatsappUrl =
-    'https://wa.me/' + CONTACT.whatsappNumber.replace(/[\s+()-]/g, '') +
+  const waHref = 'https://wa.me/' + CONTACT.whatsappNumber.replace(/[\s+()-]/g, '') +
     '?text=' + encodeURIComponent(CONTACT.whatsappMessage);
-
-  const mailtoUrl =
-    'mailto:' + CONTACT.email +
+  const mailHref = 'mailto:' + CONTACT.email +
     '?subject=' + encodeURIComponent(CONTACT.emailSubject) +
     '&body=' + encodeURIComponent(CONTACT.emailBody);
 
-  document.querySelectorAll('.js-whatsapp').forEach(function (link) {
-    link.href = whatsappUrl;
-  });
+  document.querySelectorAll('.js-whatsapp').forEach(function (a) { a.href = waHref; });
+  document.querySelectorAll('.js-email-label').forEach(function (s) { s.textContent = CONTACT.email; });
 
   const feedback = document.getElementById('copyFeedback');
   let feedbackTimer;
-
   function showFeedback(text) {
     if (!feedback) return;
     feedback.textContent = text;
     clearTimeout(feedbackTimer);
     feedbackTimer = setTimeout(function () { feedback.textContent = ''; }, 6000);
   }
-
-  document.querySelectorAll('.js-email').forEach(function (link) {
-    link.href = mailtoUrl;
-
-    // If no mail client opens, the page stays focused – copy the address so the visitor isn't stuck.
-    link.addEventListener('click', function () {
-      let leftPage = false;
-      const onBlur = function () { leftPage = true; };
+  document.querySelectorAll('.js-email').forEach(function (a) {
+    a.href = mailHref;
+    // If no mail client opens, the page keeps focus – copy the address so nobody is stuck.
+    a.addEventListener('click', function () {
+      let left = false;
+      const onBlur = function () { left = true; };
       window.addEventListener('blur', onBlur, { once: true });
-
       setTimeout(function () {
         window.removeEventListener('blur', onBlur);
-        if (leftPage || document.hidden) return;
-
+        if (left || document.hidden) return;
         if (navigator.clipboard && window.isSecureContext) {
           navigator.clipboard.writeText(CONTACT.email).then(
             function () { showFeedback('כתובת המייל הועתקה: ' + CONTACT.email); },
@@ -416,32 +72,310 @@
         } else {
           showFeedback('אפשר לכתוב לי לכתובת: ' + CONTACT.email);
         }
-      }, 1200);
+      }, 900);
+    });
+  });
+
+  const year = document.getElementById('year');
+  if (year) year.textContent = new Date().getFullYear();
+
+  /* =========================================================
+     2. FAQ accordion
+     ========================================================= */
+  const faqItems = Array.prototype.slice.call(document.querySelectorAll('.faq-item'));
+  const onLayoutChange = debounce(function () { if (hasGsap) ScrollTrigger.refresh(); }, 80);
+
+  function setFaq(item, open) {
+    item.classList.toggle('is-open', open);
+    item.querySelector('.faq-trigger').setAttribute('aria-expanded', String(open));
+  }
+  faqItems.forEach(function (item) {
+    item.querySelector('.faq-trigger').addEventListener('click', function () {
+      const open = !item.classList.contains('is-open');
+      faqItems.forEach(function (other) { if (other !== item) setFaq(other, false); });
+      setFaq(item, open);
+    });
+    item.querySelector('.faq-panel').addEventListener('transitionend', function (e) {
+      if (e.propertyName === 'grid-template-rows') onLayoutChange();
     });
   });
 
   /* =========================================================
-     8. Nav background, floating button, footer year
+     3. Nav state, floating WhatsApp
      ========================================================= */
-  const year = document.getElementById('year');
-  if (year) year.textContent = new Date().getFullYear();
-
-  const pillNav = document.getElementById('pillNav');
   const fab = document.querySelector('.fab');
-  let ticking = false;
+  const hero = document.getElementById('hero');
+  const navLinks = Array.prototype.slice.call(document.querySelectorAll('.nav-links a'));
+  const navTargets = navLinks.map(function (a) { return document.querySelector(a.getAttribute('href')); });
 
   function onScroll() {
     const y = window.scrollY;
-    if (pillNav) pillNav.classList.toggle('is-scrolled', y > 24);
-    if (fab) fab.classList.toggle('is-visible', y > window.innerHeight * 0.5);
-    updateActiveNav();
-    updateRootProgress();
-    ticking = false;
+    root.classList.toggle('is-scrolled', y > 24);
+    if (fab && hero) fab.classList.toggle('is-visible', y > hero.offsetHeight * 0.6);
+
+    const probe = window.innerHeight * 0.4;
+    let active = -1;
+    navTargets.forEach(function (el, i) {
+      if (el && el.getBoundingClientRect().top <= probe) active = i;
+    });
+    navLinks.forEach(function (a, i) {
+      if (i === active) a.setAttribute('aria-current', 'true');
+      else a.removeAttribute('aria-current');
+    });
   }
-  function requestTick() {
-    if (!ticking) { window.requestAnimationFrame(onScroll); ticking = true; }
-  }
-  window.addEventListener('scroll', requestTick, { passive: true });
-  window.addEventListener('resize', requestTick);
+  let ticking = false;
+  window.addEventListener('scroll', function () {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () { ticking = false; onScroll(); });
+  }, { passive: true });
   onScroll();
+
+  /* Card light follows the pointer (fine pointers only) */
+  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    document.querySelectorAll('.card, .contact-card').forEach(function (card) {
+      card.addEventListener('pointermove', function (e) {
+        const r = card.getBoundingClientRect();
+        card.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100).toFixed(1) + '%');
+        card.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100).toFixed(1) + '%');
+      });
+    });
+  }
+
+  /* =========================================================
+     4. Fallback: no GSAP or reduced motion → the tree is shown fully grown
+     ========================================================= */
+  if (!hasGsap || reduceMotion.matches || !trunk) {
+    root.classList.add('no-gsap', 'is-rooted');
+    if (rail) rail.classList.add('is-ready');
+    document.querySelectorAll('.card').forEach(function (c) { c.classList.add('is-bloomed'); });
+    return;
+  }
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* =========================================================
+     5. Tree geometry
+     ========================================================= */
+  const trunkLen = trunk.getTotalLength();
+
+  // Length along the trunk at which it first reaches a given y (viewBox units)
+  function lenAtY(y) {
+    let lo = 0, hi = trunkLen;
+    for (let i = 0; i < 30; i++) {
+      const mid = (lo + hi) / 2;
+      if (trunk.getPointAtLength(mid).y < y) lo = mid; else hi = mid;
+    }
+    return lo;
+  }
+
+  /* The gap is a little longer than the path and the hidden offset sits inside
+     it, so round line-caps don't leave a stray dot before a stroke starts. */
+  function prepStroke(el) {
+    const len = el.getTotalLength();
+    el.style.strokeDasharray = len + ' ' + (len + 12);
+    el.__len = len;
+    el.__hide = len + 6;
+    return len;
+  }
+  prepStroke(trunk);
+  prepStroke(trunkLight);
+
+  const stageData = stages.map(function (g) {
+    const branches = Array.prototype.slice.call(g.querySelectorAll('.branch'));
+    branches.forEach(prepStroke);
+    const branchStart = g.querySelector('.branch').getPointAtLength(0).y;
+    return {
+      el: g,
+      branches: branches,
+      leaves: g.querySelectorAll('.leaf, .leaf-vein'),
+      bud: g.querySelector('.bud'),
+      petals: g.querySelector('.petals'),
+      core: g.querySelector('.core'),
+      halo: g.querySelector('.halo'),
+      trunkLen: lenAtY(branchStart)
+    };
+  });
+
+  const roots = Array.prototype.slice.call(document.querySelectorAll('.root'));
+  roots.forEach(prepStroke);
+  const earth = document.querySelector('.earth');
+  const moss = document.querySelectorAll('.moss > *, .pebbles > *');
+
+  /* Trunk is rendered from a single "grown length" so the intro and the
+     scroll can both push it without fighting: drawn = max(intro, scroll). */
+  const growth = { intro: 0, scroll: 0 };
+  function renderTrunk() {
+    const drawn = clamp(Math.max(growth.intro, growth.scroll), 0, trunkLen);
+    trunk.style.strokeDashoffset = drawn > 0 ? trunkLen - drawn : trunk.__hide;
+    trunkLight.style.strokeDashoffset = drawn > 0 ? trunkLight.__len - drawn * (trunkLight.__len / trunkLen) : trunkLight.__hide;
+    const p = trunk.getPointAtLength(drawn);
+    tip.setAttribute('cx', p.x.toFixed(2));
+    tip.setAttribute('cy', p.y.toFixed(2));
+    rail.classList.toggle('is-growing', drawn > 2 && drawn < trunkLen - 2);
+  }
+
+  /* Hidden starting state for everything that grows */
+  function hideAll() {
+    stageData.forEach(function (s) {
+      s.branches.forEach(function (b) { gsap.set(b, { strokeDashoffset: b.__hide }); });
+      gsap.set(s.leaves, { scale: 0, transformOrigin: '0% 50%' });
+      gsap.set(s.bud, { scale: 0, opacity: 1, transformOrigin: '50% 100%' });
+      gsap.set(s.petals, { scale: 0, rotation: -15, transformOrigin: '50% 50%' });
+      gsap.set(s.core, { scale: 0, transformOrigin: '50% 50%' });
+      gsap.set(s.halo, { scale: 0.4, opacity: 0, transformOrigin: '50% 50%' });
+    });
+    roots.forEach(function (r) { gsap.set(r, { strokeDashoffset: r.__hide }); });
+    gsap.set(earth, { opacity: 0 });
+    gsap.set(moss, { scale: 0, transformOrigin: '50% 100%' });
+  }
+
+  /* One blossom: branch sprouts → leaves unfurl → bud swells → flower opens.
+     Durations are in timeline units (the scroll timeline spans 0 → 1). */
+  function addBloom(tl, s, at, unit) {
+    const u = unit;
+    s.branches.forEach(function (b, i) {
+      tl.fromTo(b, { strokeDashoffset: b.__hide }, { strokeDashoffset: 0, duration: u * (i ? 0.5 : 1), ease: 'sine.out', immediateRender: false }, at + (i ? u * 0.5 : 0));
+    });
+    tl.fromTo(s.leaves, { scale: 0 }, { scale: 1, duration: u * 0.7, stagger: u * 0.12, ease: 'back.out(2)', immediateRender: false }, at + u * 0.35);
+    tl.fromTo(s.bud, { scale: 0, opacity: 1 }, { scale: 1, duration: u * 0.45, ease: 'sine.out', immediateRender: false }, at + u * 0.8);
+    tl.fromTo(s.halo, { scale: 0.4, opacity: 0 }, { scale: 1, opacity: 1, duration: u * 0.9, ease: 'sine.out', immediateRender: false }, at + u * 1.1);
+    tl.fromTo(s.petals, { scale: 0, rotation: -15 }, { scale: 1, rotation: 0, duration: u * 0.9, ease: 'back.out(1.6)', immediateRender: false }, at + u * 1.15);
+    tl.fromTo(s.bud, { opacity: 1 }, { opacity: 0, scale: 0.6, duration: u * 0.4, ease: 'sine.in', immediateRender: false }, at + u * 1.3);
+    tl.fromTo(s.core, { scale: 0 }, { scale: 1, duration: u * 0.6, ease: 'back.out(2.2)', immediateRender: false }, at + u * 1.5);
+  }
+
+  /* =========================================================
+     6. Intro – the first sprout & flower open at the top on load
+     ========================================================= */
+  hideAll();
+  renderTrunk();
+  rail.classList.add('is-ready');
+
+  const intro = gsap.timeline({ delay: 0.5 });
+  intro.to(growth, { intro: stageData[0].trunkLen, duration: 1.6, ease: 'sine.inOut', onUpdate: renderTrunk });
+  addBloom(intro, stageData[0], 1.2, 0.9);
+
+  // Hero copy rises in softly
+  gsap.from('.hero-inner > *', { y: 24, opacity: 0, duration: 1.3, stagger: 0.14, ease: 'power2.out', delay: 0.15 });
+  gsap.from('.scroll-cue', { opacity: 0, duration: 1.2, delay: 1.4 });
+
+  /* =========================================================
+     7. Scroll timeline – grows in step with each section
+     ========================================================= */
+  const sectionEls = [
+    document.querySelector('.card-1'),
+    document.querySelector('.card-2'),
+    document.querySelector('.card-3'),
+    document.getElementById('faq')
+  ];
+  const contactEl = document.getElementById('contact');
+  let growTl = null;
+
+  function buildGrowth() {
+    let progress = 0;
+    if (growTl) {
+      progress = growTl.scrollTrigger ? growTl.scrollTrigger.progress : 0;
+      if (growTl.scrollTrigger) growTl.scrollTrigger.kill();
+      growTl.kill();
+      growTl = null;
+    }
+
+    const maxScroll = Math.max(1, ScrollTrigger.maxScroll(window));
+    const vh = window.innerHeight;
+    // Scroll progress (0–1) at which an element's top crosses 62% of the viewport
+    function at(el, line) {
+      const top = el.getBoundingClientRect().top + window.scrollY;
+      return clamp((top - vh * line) / maxScroll, 0, 1);
+    }
+
+    const unit = 0.035;
+    const points = [];          // [time, trunk length] keyframes
+    const blooms = [];
+    let last = 0;
+    sectionEls.forEach(function (el, i) {
+      const t = Math.max(at(el, 0.62), last + unit * 2.2);
+      blooms.push({ s: stageData[i + 1], at: t });
+      points.push([t, stageData[i + 1].trunkLen]);
+      last = t;
+    });
+    const rootsAt = clamp(Math.max(at(contactEl, 0.7), last + unit * 2.5), 0, 0.93);
+    points.push([rootsAt, trunkLen]);
+
+    growTl = gsap.timeline({
+      defaults: { ease: 'none' },
+      scrollTrigger: {
+        start: 0,
+        end: 'max',
+        scrub: 1.1,
+        invalidateOnRefresh: false
+      }
+    });
+
+    // Trunk: from the top down, reaching each branch exactly as its bloom begins
+    let prevT = 0, prevL = 0;
+    points.forEach(function (p) {
+      growTl.fromTo(growth, { scroll: prevL }, { scroll: p[1], duration: Math.max(0.001, p[0] - prevT), onUpdate: renderTrunk, immediateRender: false }, prevT);
+      prevT = p[0];
+      prevL = p[1];
+    });
+
+    blooms.forEach(function (b) { addBloom(growTl, b.s, b.at, unit); });
+
+    // Finale: earth and moss settle, roots spread deep into the ground
+    const rootSpan = Math.max(0.05, 1 - rootsAt);
+    growTl.fromTo(earth, { opacity: 0 }, { opacity: 1, duration: rootSpan * 0.4, immediateRender: false }, rootsAt);
+    roots.forEach(function (r, i) {
+      growTl.fromTo(r, { strokeDashoffset: r.__hide }, {
+        strokeDashoffset: 0,
+        duration: rootSpan * (r.classList.contains('r-fine') ? 0.5 : 0.75),
+        ease: 'sine.out',
+        immediateRender: false
+      }, rootsAt + rootSpan * (r.classList.contains('r-fine') ? 0.4 : i * 0.04));
+    });
+    growTl.fromTo(moss, { scale: 0 }, { scale: 1, duration: rootSpan * 0.3, stagger: rootSpan * 0.03, ease: 'back.out(2)', immediateRender: false }, rootsAt + rootSpan * 0.15);
+
+    growTl.set({}, {}, 1);   // keep the timeline exactly 0 → 1 long
+    growTl.progress(progress);
+  }
+
+  /* Cards: float in, and glow softly when their blossom opens */
+  gsap.utils.toArray('.card').forEach(function (card) {
+    gsap.fromTo(card, { opacity: 0, y: 50 }, {
+      opacity: 1, y: 0, duration: 1.3, ease: 'power2.out',
+      scrollTrigger: { trigger: card, start: 'top 88%', toggleActions: 'play none none reverse' }
+    });
+    ScrollTrigger.create({
+      trigger: card,
+      start: 'top 62%',
+      onEnter: function () { card.classList.add('is-bloomed'); },
+      onLeaveBack: function () { card.classList.remove('is-bloomed'); }
+    });
+  });
+  ScrollTrigger.create({
+    trigger: contactEl,
+    start: 'top 70%',
+    onToggle: function (self) { root.classList.toggle('is-rooted', self.isActive || self.progress >= 1); }
+  });
+
+  gsap.utils.toArray('.reveal').forEach(function (el) {
+    gsap.fromTo(el, { opacity: 0, y: 30 }, {
+      opacity: 1, y: 0, duration: 1.1, ease: 'power2.out',
+      scrollTrigger: { trigger: el, start: 'top 90%', toggleActions: 'play none none reverse' }
+    });
+  });
+
+  buildGrowth();
+
+  // Re-measure after layout changes (fonts, resize, FAQ panels)
+  ScrollTrigger.addEventListener('refresh', debounce(buildGrowth, 30));
+  let lastW = window.innerWidth;
+  window.addEventListener('resize', debounce(function () {
+    if (window.innerWidth === lastW) return;   // ignore mobile URL-bar height changes
+    lastW = window.innerWidth;
+    ScrollTrigger.refresh();
+  }, 200));
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(function () { ScrollTrigger.refresh(); });
+  }
 })();
