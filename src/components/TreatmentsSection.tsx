@@ -65,8 +65,8 @@ function BentoCard({ t, large }: { t: Treatment; large?: boolean }) {
       id={t.id}
       onMouseMove={onMove}
       className={cn(
-        'glass group relative flex h-full flex-col overflow-hidden rounded-[28px] p-7 transition-transform duration-500 hover:-translate-y-1 md:p-9',
-        large && 'md:min-h-[460px]',
+        'glass group relative flex h-full flex-col overflow-hidden rounded-[28px] p-7 transition-transform duration-500 hover:-translate-y-1 md:p-9 lg:p-8',
+        large && 'md:min-h-[460px] lg:min-h-0',
       )}
     >
       <div aria-hidden className={cn('absolute inset-0 -z-10 bg-gradient-to-br opacity-90', t.tint)} />
@@ -94,7 +94,7 @@ function BentoCard({ t, large }: { t: Treatment; large?: boolean }) {
         ))}
       </ul>
 
-      <h3 className={cn('mt-5 font-serif font-medium text-forest-moss', large ? 'text-3xl md:text-4xl' : 'text-2xl')}>{t.title}</h3>
+      <h3 className={cn('mt-5 font-serif font-medium text-forest-moss', large ? 'text-3xl md:text-4xl lg:text-[2.1rem]' : 'text-2xl')}>{t.title}</h3>
       <p className={cn('mt-3 leading-relaxed text-forest-moss/80', large && 'md:text-lg')}>{t.body}</p>
 
       <p className="mt-auto pt-6 text-sm text-forest-moss/70">
@@ -108,27 +108,35 @@ function BentoCard({ t, large }: { t: Treatment; large?: boolean }) {
 export default function TreatmentsSection() {
   const [first, ...others] = TREATMENTS
   return (
-    <section id="treatments" aria-labelledby="treatments-title" className="relative py-24 md:py-32">
+    // On laptops and up the whole section – heading and all three cards – fits one screen below the navbar:
+    // the bento becomes a single asymmetric row and the section centres itself in the viewport.
+    <section
+      id="treatments"
+      aria-labelledby="treatments-title"
+      className="relative flex flex-col justify-center py-24 md:py-32 lg:min-h-[100svh] lg:scroll-mt-0 lg:pb-12 lg:pt-28"
+    >
       <div aria-hidden className="absolute -top-20 start-[10%] -z-10 h-72 w-72 rounded-full bg-river-mist blur-3xl" />
       <div aria-hidden className="absolute bottom-10 end-[15%] -z-10 h-64 w-64 rounded-full bg-flower-bloom/40 blur-3xl" />
 
       <div className="page-container">
-        <Reveal className="max-w-2xl">
-          <span className="glass-mist inline-block rounded-full px-4 py-1.5 text-sm text-stream-blue">הטיפולים</span>
-          <h2 id="treatments-title" className="mt-4 font-serif text-4xl font-light text-forest-moss md:text-5xl">
-            שלוש דרכים לחזור לעצמך
-          </h2>
-          <p className="mt-4 text-lg leading-relaxed text-forest-moss/75">
+        <Reveal className="max-w-2xl lg:flex lg:max-w-none lg:items-end lg:justify-between lg:gap-12">
+          <div>
+            <span className="glass-mist inline-block rounded-full px-4 py-1.5 text-sm text-stream-blue">הטיפולים</span>
+            <h2 id="treatments-title" className="mt-4 font-serif text-4xl font-light text-forest-moss md:text-5xl">
+              שלוש דרכים לחזור לעצמך
+            </h2>
+          </div>
+          <p className="mt-4 text-lg leading-relaxed text-forest-moss/75 lg:mt-0 lg:max-w-md">
             כל מפגש נבנה סביב מה שנכון לך עכשיו – לפעמים מגע, לפעמים נשימה, ולפעמים פשוט שקט.
           </p>
         </Reveal>
 
-        <div className="mt-12 grid gap-5 md:grid-cols-2 md:grid-rows-2">
-          <Reveal className="md:row-span-2">
+        <div className="mt-12 grid gap-5 md:grid-cols-2 md:grid-rows-2 lg:mt-10 lg:grid-cols-[1.3fr_1fr_1fr] lg:grid-rows-1">
+          <Reveal className="h-full md:row-span-2 lg:row-span-1">
             <BentoCard t={first} large />
           </Reveal>
           {others.map((t, i) => (
-            <Reveal key={t.id} delay={0.1 * (i + 1)}>
+            <Reveal key={t.id} delay={0.1 * (i + 1)} className="h-full">
               <BentoCard t={t} />
             </Reveal>
           ))}

@@ -5,6 +5,7 @@ import Navbar from './components/Navbar'
 import TreeSpine from './components/TreeSpine'
 import TreatmentsSection from './components/TreatmentsSection'
 import FaqSection from './components/FaqSection'
+import AboutSection from './components/AboutSection'
 import ContactSection from './components/ContactSection'
 import FloatingWhatsApp from './components/FloatingWhatsApp'
 import Reveal from './components/Reveal'
@@ -18,7 +19,7 @@ const HERO = {
 }
 
 // Reaching each of these sprouts a flower on the spine.
-const BLOOM_AT = ['intro', 'treatments', 'care-touch', 'care-breath', 'care-rest', 'faq']
+const BLOOM_AT = ['intro', 'treatments', 'care-touch', 'care-breath', 'care-rest', 'faq', 'about']
 
 function ExpandedCaption() {
   return (
@@ -52,7 +53,16 @@ function ExpandedCaption() {
 
 function IntroSection() {
   return (
-    <section id="intro" aria-labelledby="intro-title" className="relative pb-8 pt-24 md:pt-32">
+    // A full breath between the hero and the treatments: centred, unhurried, with a soft mist glow behind.
+    <section
+      id="intro"
+      aria-labelledby="intro-title"
+      className="relative isolate flex min-h-[75svh] items-center py-24 md:min-h-[85svh]"
+    >
+      <div
+        aria-hidden
+        className="absolute inset-x-0 top-1/2 -z-10 mx-auto h-[26rem] max-w-4xl -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(220,232,227,0.9),rgba(245,229,201,0.35)_55%,transparent_75%)] blur-2xl"
+      />
       <div className="page-container max-w-3xl text-center">
         <Reveal>
           <h2 id="intro-title" className="font-serif text-3xl font-light leading-snug text-forest-moss md:text-[2.6rem]">
@@ -99,6 +109,7 @@ export default function App() {
           <IntroSection />
           <TreatmentsSection />
           <FaqSection />
+          <AboutSection />
           <ContactSection />
         </main>
 

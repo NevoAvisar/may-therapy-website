@@ -53,6 +53,9 @@ const ROOTS = [
   'M196 78 C204 98 200 120 190 140',
   'M172 46 C162 70 140 82 116 92',
   'M132 156 C118 162 104 176 98 194',
+  'M186 128 C176 150 160 166 140 176',
+  'M70 70 C56 82 40 100 34 124',
+  'M226 118 C206 128 192 146 188 170',
   'M70 70 C58 86 40 92 22 104',
   'M226 118 C240 130 248 148 252 170',
 ]
@@ -207,8 +210,8 @@ export default function TreeSpine({ bloomAt, rootsAt, visible = true }: TreeSpin
               d={d}
               fill="none"
               stroke={i < 5 ? '#7F6A58' : '#9AB6AB'}
-              strokeOpacity={i < 5 ? 0.75 : 0.6}
-              strokeWidth={i < 5 ? 2.2 - i * 0.25 : 1}
+              strokeOpacity={i < 5 ? 0.85 : 0.65}
+              strokeWidth={i < 5 ? 4.2 - i * 0.45 : 1.6}
               strokeLinecap="round"
               initial={false}
               animate={{ pathLength: rooted ? 1 : 0, opacity: rooted ? 1 : 0 }}
