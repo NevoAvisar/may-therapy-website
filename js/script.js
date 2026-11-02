@@ -1,5 +1,5 @@
 /* =========================================================
-   May – Forest & Rivers
+   May – Forest & Rivers × Mosa-style glass
    The right-side tree grows with the scroll (GSAP + ScrollTrigger):
    trunk draws downwards → a branch sprouts and a blossom opens for
    every section → at the finale the tree settles into roots & moss.
@@ -12,7 +12,7 @@
   const CONTACT = {
     // International format, digits only, no "+" or leading 0 (e.g. 972501234567)
     whatsappNumber: '972XXXXXXXXX',
-    whatsappMessage: 'היי מאי 🌿 הגעתי דרך האתר ואשמח לתאם מפגש.',
+    whatsappMessage: 'היי מאי 🌿 הגעתי דרך האתר ואשמח לשמוע עוד ולתאם מפגש.',
     email: 'may@example.com',
     emailSubject: 'פנייה מהאתר – שאלה / תיאום מפגש',
     emailBody: 'היי מאי,\n\nאשמח לשמוע פרטים נוספים ולתאם מפגש.\n\nשם:\nטלפון:\n\nתודה!'
@@ -118,22 +118,40 @@
     navTargets.forEach(function (el, i) {
       if (el && el.getBoundingClientRect().top <= probe) active = i;
     });
-    navLinks.forEach(function (a, i) {
-      if (i === active) a.setAttribute('aria-current', 'true');
-      else a.removeAttribute('aria-current');
-    });
+    if (active !== activeNav) {
+      activeNav = active;
+      navLinks.forEach(function (a, i) {
+        if (i === active) a.setAttribute('aria-current', 'true');
+        else a.removeAttribute('aria-current');
+      });
+      moveIndicator();
+    }
   }
+
+  /* Sliding pill indicator behind the active nav link */
+  const indicator = document.querySelector('.nav-indicator');
+  let activeNav = -2;
+  function moveIndicator() {
+    if (!indicator) return;
+    const link = navLinks[activeNav];
+    if (!link || !link.offsetWidth) { indicator.classList.remove('is-on'); return; }
+    indicator.style.setProperty('--ind-x', link.offsetLeft + 'px');
+    indicator.style.setProperty('--ind-w', link.offsetWidth + 'px');
+    indicator.classList.add('is-on');
+  }
+  window.addEventListener('resize', debounce(moveIndicator, 120));
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(moveIndicator);
+  onScroll();
   let ticking = false;
   window.addEventListener('scroll', function () {
     if (ticking) return;
     ticking = true;
     requestAnimationFrame(function () { ticking = false; onScroll(); });
   }, { passive: true });
-  onScroll();
 
   /* Card light follows the pointer (fine pointers only) */
   if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-    document.querySelectorAll('.card, .contact-card').forEach(function (card) {
+    document.querySelectorAll('.card, .tile, .contact-card').forEach(function (card) {
       card.addEventListener('pointermove', function (e) {
         const r = card.getBoundingClientRect();
         card.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100).toFixed(1) + '%');
@@ -257,7 +275,7 @@
   addBloom(intro, stageData[0], 1.2, 0.9);
 
   // Hero copy rises in softly
-  gsap.from('.hero-inner > *', { y: 24, opacity: 0, duration: 1.3, stagger: 0.14, ease: 'power2.out', delay: 0.15 });
+  gsap.from('.hero-inner > *', { clearProps: 'transform', y: 24, opacity: 0, duration: 1.3, stagger: 0.14, ease: 'power2.out', delay: 0.15 });
   gsap.from('.scroll-cue', { opacity: 0, duration: 1.2, delay: 1.4 });
 
   /* =========================================================
@@ -340,10 +358,11 @@
   }
 
   /* Cards: float in, and glow softly when their blossom opens */
+  // Reveals play once and then release the transform, so CSS hover lifts work
   gsap.utils.toArray('.card').forEach(function (card) {
     gsap.fromTo(card, { opacity: 0, y: 50 }, {
-      opacity: 1, y: 0, duration: 1.3, ease: 'power2.out',
-      scrollTrigger: { trigger: card, start: 'top 88%', toggleActions: 'play none none reverse' }
+      opacity: 1, y: 0, duration: 1.3, ease: 'power2.out', clearProps: 'transform',
+      scrollTrigger: { trigger: card, start: 'top 88%', once: true }
     });
     ScrollTrigger.create({
       trigger: card,
@@ -360,8 +379,9 @@
 
   gsap.utils.toArray('.reveal').forEach(function (el) {
     gsap.fromTo(el, { opacity: 0, y: 30 }, {
-      opacity: 1, y: 0, duration: 1.1, ease: 'power2.out',
-      scrollTrigger: { trigger: el, start: 'top 90%', toggleActions: 'play none none reverse' }
+      opacity: 1, y: 0, duration: 1.1, ease: 'power2.out', clearProps: 'transform',
+      delay: el.classList.contains('tile') ? 0.15 : 0,
+      scrollTrigger: { trigger: el, start: 'top 90%', once: true }
     });
   });
 

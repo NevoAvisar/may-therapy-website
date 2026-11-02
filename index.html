@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>מאי | מקום לעצור, לנשום ולהתחבר מחדש</title>
   <meta name="description" content="מאי – מרחב טיפולי עוטף בחיבור לגוף ולנפש: טיפול במגע וקרקוע, איזון גוף-נפש ונשימה, ומרחב לפריקה וטעינה.">
-  <meta name="theme-color" content="#F5F3EF">
+  <meta name="theme-color" content="#F6F4F0">
 
   <meta property="og:type" content="website">
   <meta property="og:locale" content="he_IL">
   <meta property="og:title" content="מאי | מקום לעצור, לנשום ולהתחבר מחדש">
-  <meta property="og:description" content="מרחב טיפולי עוטף בחיבור לגוף ולנפש.">
+  <meta property="og:description" content="טיפולים מותאמים אישית לשחרור עומסים, חיזוק הגוף והשקטת התודעה.">
 
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 
@@ -41,15 +41,20 @@
   <!-- ================= Floating pill navigation ================= -->
   <header class="nav-wrap">
     <nav class="pill-nav" aria-label="ניווט ראשי">
-      <a href="#hero" class="nav-logo">
+      <a href="#hero" class="nav-logo" aria-label="מאי – מרחב טיפולי, חזרה להתחלה">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21V11"/><path d="M12 13c-4 0-6-3-6-7 4 0 6 3 6 7Z"/><path d="M12 11c0-4 2-7 6-7 0 4-2 7-6 7Z"/></svg>
-        <span>מאי</span>
+        <span class="brand">מאי <span class="brand-dot" aria-hidden="true">•</span> <span class="brand-sub">מרחב טיפולי</span></span>
       </a>
       <div class="nav-links">
+        <span class="nav-indicator" aria-hidden="true"></span>
         <a href="#treatments">הטיפולים</a>
         <a href="#faq">שאלות</a>
-        <a href="#contact" class="nav-cta">בואו נדבר</a>
+        <a href="#contact">בואו נדבר</a>
       </div>
+      <a class="nav-cta js-whatsapp" href="https://wa.me/972XXXXXXXXX" target="_blank" rel="noopener">
+        <svg class="icon-wa" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg>
+        <span>לתיאום</span>
+      </a>
     </nav>
   </header>
 
@@ -61,16 +66,16 @@
       <defs>
         <linearGradient id="gTrunk" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="820">
           <stop offset="0"    stop-color="#A9BEA6"/>
-          <stop offset="0.35" stop-color="#8FA68F"/>
+          <stop offset="0.35" stop-color="#8EA691"/>
           <stop offset="0.75" stop-color="#9A8675"/>
-          <stop offset="1"    stop-color="#8C7765"/>
+          <stop offset="1"    stop-color="#7F6A58"/>
         </linearGradient>
         <linearGradient id="gBranch" x1="1" y1="0" x2="0" y2="0">
-          <stop offset="0" stop-color="#8C7765"/>
-          <stop offset="1" stop-color="#8FA68F"/>
+          <stop offset="0" stop-color="#7F6A58"/>
+          <stop offset="1" stop-color="#8EA691"/>
         </linearGradient>
         <radialGradient id="gHalo">
-          <stop offset="0"   stop-color="#F4E2BB" stop-opacity="0.75"/>
+          <stop offset="0"   stop-color="#F5E5C9" stop-opacity="0.75"/>
           <stop offset="0.5" stop-color="#E8C5C8" stop-opacity="0.28"/>
           <stop offset="1"   stop-color="#E8C5C8" stop-opacity="0"/>
         </radialGradient>
@@ -92,7 +97,7 @@
           <stop offset="1"    stop-color="#DCE8E3" stop-opacity="0"/>
         </radialGradient>
         <linearGradient id="gRoot" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#8C7765"/>
+          <stop offset="0" stop-color="#7F6A58"/>
           <stop offset="1" stop-color="#A89482" stop-opacity="0.55"/>
         </linearGradient>
       </defs>
@@ -211,12 +216,12 @@
     <!-- ================= 1 · Hero ================= -->
     <section class="hero" id="hero" data-stage="0" aria-labelledby="heroTitle">
       <div class="container hero-inner">
-        <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>מאי · מרחב טיפולי אישי</p>
+        <p class="badge-shimmer"><span class="eyebrow-dot" aria-hidden="true"></span>מרחב טיפולי אישי</p>
         <h1 id="heroTitle" class="hero-title">
           <span class="line">מקום לעצור,</span>
           <span class="line line-soft">לנשום ולהתחבר מחדש</span>
         </h1>
-        <p class="hero-sub">מרחב טיפולי עוטף בחיבור לגוף ולנפש</p>
+        <p class="hero-sub">טיפולים מותאמים אישית לשחרור עומסים, חיזוק הגוף והשקטת התודעה.</p>
         <div class="hero-actions">
           <a class="btn btn-primary js-whatsapp" href="https://wa.me/972XXXXXXXXX" target="_blank" rel="noopener">
             <svg class="icon-wa" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg>
@@ -250,12 +255,18 @@
             <h3 id="t1">טיפול במגע וקרקוע</h3>
             <p>מגע קשוב ועמוק שמזמין את הגוף להניח את המשקל, להאט ולהרגיש שוב את הקרקע מתחת לרגליים.</p>
             <ul class="chips" aria-label="פרטי הטיפול">
-              <li>60–90 דק׳</li>
+              <li>קרקוע</li>
               <li>מגע עמוק ועדין</li>
               <li>שחרור עומס</li>
             </ul>
             <p class="card-for"><strong>מתאים ל:</strong> מי שחווים עומס, כאבים או תחושת ניתוק מהגוף.</p>
           </article>
+
+          <aside class="tile tile-1 reveal" aria-label="משך המפגש">
+            <span class="tile-ring" aria-hidden="true"><span></span></span>
+            <p class="tile-big">60–90</p>
+            <p class="tile-label">דקות של מפגש אישי, בקצב שלך</p>
+          </aside>
 
           <article class="card card-2" data-stage="2" aria-labelledby="t2">
             <span class="card-sheen" aria-hidden="true"></span>
@@ -272,6 +283,12 @@
             <p class="card-for"><strong>מתאים ל:</strong> תקופות של שינוי, חרדה או רגשות מציפים.</p>
           </article>
 
+          <aside class="tile tile-2 reveal" aria-label="תרגול נשימה קצר">
+            <span class="breath" aria-hidden="true"><span></span></span>
+            <p class="tile-label"><span class="breath-word">שאיפה</span> · <span class="breath-word">נשיפה</span></p>
+            <p class="tile-note">נשימה אחת איטית – כבר התחלנו.</p>
+          </aside>
+
           <article class="card card-3" data-stage="3" aria-labelledby="t3">
             <span class="card-sheen" aria-hidden="true"></span>
             <div class="card-top">
@@ -286,6 +303,11 @@
             </ul>
             <p class="card-for"><strong>מתאים ל:</strong> הורים, אנשי טיפול ומי שנותנים הרבה לאחרים.</p>
           </article>
+
+          <aside class="tile tile-3 reveal" aria-label="ציטוט">
+            <span class="tile-quote" aria-hidden="true">”</span>
+            <p class="tile-quote-text">״שעה שכולה שלך – בלי לתת, רק לקבל.״</p>
+          </aside>
         </div>
       </div>
     </section>
