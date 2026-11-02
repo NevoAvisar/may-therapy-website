@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { Fragment, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -37,6 +37,70 @@ interface ScrollExpandMediaProps {
 const PIN_LENGTH = '+=140%'
 /** Share of the pin spent resting at full bleed before the page takes over. */
 const HOLD = 0.2
+
+/** Deterministic 0–1 noise, so every render (and reload) scatters the letters the same way. */
+const noise = (n: number) => {
+  const x = Math.sin(n * 127.1 + 311.7) * 43758.5453
+  return x - Math.floor(x)
+}
+
+/** Stagger span across a line: the outermost letters start at 0, the centre at this share of `--p`. */
+const VAPOUR_STAGGER = 0.3
+/** Share of `--p` each letter takes to fully dissolve. */
+const VAPOUR_SPAN = 0.45
+
+/**
+ * Vapour dissolve (after @jatin-yadav05's 21st.dev "vapour text effect"), bound to the section's `--p`.
+ * Each letter has its own local progress `--v`; it blurs, swells, rises and drifts outward on the wind
+ * while fading. Edges go first, the centre last – like river mist carried off a line of text.
+ */
+function VapourLine({ text, seed, className }: { text: string; seed: number; className?: string }) {
+  const words = text.split(' ')
+  const total = text.replace(/ /g, '').length
+  const centre = (total - 1) / 2
+  let i = 0
+
+  return (
+    <span aria-hidden className={className}>
+      {words.map((word, w) => (
+        <Fragment key={w}>
+          {w > 0 && ' '}
+          {/* Letters stay inline-block inside a nowrap word, so Hebrew RTL order and line wrapping hold. */}
+          <span className="inline-block whitespace-nowrap">
+            {[...word].map((char) => {
+              const idx = i++
+              const fromCentre = centre ? (idx - centre) / centre : 0 // −1 … 1 (logical order)
+              const r = noise(seed * 97 + idx)
+              const delay = (1 - Math.abs(fromCentre)) * VAPOUR_STAGGER + r * 0.06
+              // In RTL, logical start sits on the right, so it drifts right (+x) and the end drifts left.
+              const dx = -fromCentre * 26 + (noise(seed * 31 + idx) - 0.5) * 30
+              const dy = 26 + r * 34
+              const swell = 0.1 + noise(seed * 53 + idx) * 0.15
+              return (
+                <span
+                  key={idx}
+                  className="inline-block"
+                  style={
+                    {
+                      '--v': `clamp(0, calc((var(--p) - ${delay.toFixed(3)}) / ${VAPOUR_SPAN}), 1)`,
+                      transform: `translate3d(calc(var(--v) * ${dx.toFixed(1)}px), calc(var(--v) * ${-dy.toFixed(1)}px), 0) scale(calc(1 + var(--v) * ${swell.toFixed(3)}))`,
+                      filter: 'blur(calc(var(--v) * 16px))',
+                      // Fade trails the blur slightly, so letters read as mist before they vanish.
+                      opacity: 'calc(1 - var(--v) * var(--v))',
+                      willChange: 'transform, filter, opacity',
+                    } as CSSProperties
+                  }
+                >
+                  {char}
+                </span>
+              )
+            })}
+          </span>
+        </Fragment>
+      ))}
+    </span>
+  )
+}
 
 export default function ScrollExpandMedia({
   mediaType = 'image',
@@ -209,20 +273,17 @@ export default function ScrollExpandMedia({
             )}
           </div>
 
-          {/* Split headline */}
+          {/* Split headline – vaporises letter by letter as the media expands */}
           <h1
+            aria-label={title}
             className={cn(
               'pointer-events-none absolute inset-0 z-20 flex flex-col items-center justify-center gap-1 text-center font-serif font-light leading-[1.05] text-primary',
               textBlend && 'mix-blend-difference',
             )}
             style={{ textShadow: '0 2px 30px rgba(30,44,36,0.45)' }}
           >
-            <span className="block text-[clamp(3.2rem,2rem+6vw,7.5rem)]" style={driftOut(-1)}>
-              {firstWord}
-            </span>
-            <span className="block px-4 text-[clamp(2rem,1.2rem+3.6vw,4.6rem)]" style={driftOut(1)}>
-              {restOfTitle}
-            </span>
+            <VapourLine text={firstWord} seed={1} className="block text-[clamp(3.2rem,2rem+6vw,7.5rem)]" />
+            <VapourLine text={restOfTitle} seed={2} className="block px-4 text-[clamp(2rem,1.2rem+3.6vw,4.6rem)]" />
           </h1>
 
           {/* Eyebrow + scroll prompt */}
