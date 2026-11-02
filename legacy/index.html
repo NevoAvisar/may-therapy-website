@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מאי | מקום לעצור, לנשום ולהתחבר מחדש</title>
+  <meta name="description" content="מאי – טיפול במגע וקרקוע, איזון גוף-נפש ונשימה, ומרחב שקט לפריקה וטעינה. מקום לעצור, לנשום ולהתחבר מחדש.">
+  <meta name="theme-color" content="#1A211C">
+
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="he_IL">
+  <meta property="og:title" content="מאי | מקום לעצור, לנשום ולהתחבר מחדש">
+  <meta property="og:description" content="טיפול במגע ואיזון גוף-נפש – מרחב שקט לחזור לקרקע.">
+  <meta property="og:image" content="assets/tree.jpg">
+
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preload" as="image" href="assets/tree.jpg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300;400;500;700&family=Rubik:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+  <script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+
+  <a class="skip-link" href="#contact">דלגו ליצירת קשר</a>
+
+  <!-- ================= Floating pill navigation ================= -->
+  <header class="nav-wrap">
+    <nav class="pill-nav" id="pillNav" aria-label="ניווט ראשי">
+      <a href="#journey" class="nav-logo" aria-label="מאי – חזרה להתחלה">
+        <span>מאי</span>
+      </a>
+
+      <div class="nav-links">
+        <span class="nav-indicator" aria-hidden="true"></span>
+        <a href="#treatments" data-nav="treatments">הטיפולים</a>
+        <a href="#faq" data-nav="faq">שאלות</a>
+        <a href="#about" data-nav="about">עליי</a>
+      </div>
+
+      <a href="#contact" class="nav-cta">
+        <span>בואו נדבר</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+      </a>
+    </nav>
+  </header>
+
+  <!-- ================= Root scroll-progress (decorative) ================= -->
+  <div class="root-progress" aria-hidden="true">
+    <svg viewBox="0 0 28 420" focusable="false">
+      <defs>
+        <linearGradient id="rootInk" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="420">
+          <stop offset="0"    stop-color="#DCEBD2"/>
+          <stop offset="0.45" stop-color="#A9C4A0"/>
+          <stop offset="0.8"  stop-color="#C9A27A"/>
+          <stop offset="1"    stop-color="#9A6E4A"/>
+        </linearGradient>
+      </defs>
+      <path class="rp-track" d="M14 0 C10 50 18 90 14 140 S9 230 15 290 S12 380 14 420"/>
+      <path class="rp-main"  d="M14 0 C10 50 18 90 14 140 S9 230 15 290 S12 380 14 420"/>
+      <path class="rp-branch" data-at="0.29" d="M14 122 C20 132 24 142 26 158"/>
+      <path class="rp-branch" data-at="0.48" d="M12 200 C6 213 3 225 2 244"/>
+      <path class="rp-branch" data-at="0.68" d="M15 286 C21 298 24 312 25 332"/>
+      <path class="rp-branch" data-at="0.83" d="M13 350 C7 362 4 376 3 398"/>
+      <path class="rp-branch" data-at="0.93" d="M14 392 C18 402 21 410 23 419"/>
+      <circle class="rp-tip" cx="14" cy="0" r="2.4"/>
+    </svg>
+  </div>
+
+  <main id="main">
+
+    <!-- ================= The Journey: Canopy → Trunk → Roots ================= -->
+    <section class="journey" id="journey" aria-label="המסע – מהצמרת אל השורשים">
+
+      <!-- Sticky stage: one photograph, framed and moved by GSAP -->
+      <div class="stage">
+
+        <div class="frame" aria-hidden="true">
+          <img class="tree-photo" src="assets/tree.jpg" alt="" decoding="async" fetchpriority="high"
+               onerror="this.onerror=null; this.closest('.frame').classList.add('photo-missing');">
+          <p class="photo-notice" hidden>assets/tree.jpg לא נמצא – שמרו את התמונה בתיקיית assets</p>
+        </div>
+
+        <!-- Natural light & atmosphere -->
+        <div class="light light-sun" aria-hidden="true"></div>
+        <div class="mist" aria-hidden="true"><span></span><span></span></div>
+
+        <!-- Depth of field: blurs the periphery, the centre stays sharp -->
+        <div class="dof" aria-hidden="true"></div>
+
+        <!-- Readability + ambience -->
+        <div class="shade shade-base"  aria-hidden="true"></div>
+        <div class="shade shade-hero"  aria-hidden="true"></div>
+        <div class="shade shade-trunk" aria-hidden="true"></div>
+        <div class="shade shade-roots" aria-hidden="true"></div>
+        <div class="ambient" aria-hidden="true"><span></span><span></span></div>
+        <div class="light-ray" aria-hidden="true"><span class="ray-gold"></span><span class="ray-sage"></span></div>
+
+        <!-- ===== Phase 1 — Canopy ===== -->
+        <div class="panel panel-hero">
+          <div class="container hero-inner">
+            <div class="hero-badge">
+              <span class="badge badge-hero">
+                <span class="badge-dot" aria-hidden="true"></span>
+                מרחב טיפולי אישי
+              </span>
+            </div>
+
+            <h1 class="hero-title">
+              <span class="line">מקום לעצור,</span>
+              <span class="line line-glow">לנשום ולהתחבר מחדש</span>
+            </h1>
+
+            <p class="hero-tagline">מאי <span class="sep" aria-hidden="true">•</span> טיפול במגע ואיזון גוף-נפש</p>
+
+            <div class="hero-actions">
+              <a href="#contact" class="btn btn-light btn-shimmer">לתיאום שיחת היכרות</a>
+              <a href="#treatments" class="btn btn-glass">לגלות את הטיפולים</a>
+            </div>
+          </div>
+
+          <a href="#treatments" class="scroll-cue" aria-label="גלילה אל הטיפולים">
+            <span class="scroll-mouse"><span class="scroll-wheel"></span></span>
+            <span>גללו פנימה אל היער</span>
+          </a>
+        </div>
+
+        <!-- ===== Phase 2 — Trunk: bento treatments ===== -->
+        <div class="panel panel-trunk" id="treatments" aria-labelledby="treatmentsTitle">
+          <div class="container">
+            <header class="panel-header">
+              <span class="badge">הטיפולים</span>
+              <h2 id="treatmentsTitle" class="panel-title">שלוש דרכים לחזור לעצמך</h2>
+            </header>
+
+            <div class="bento">
+              <!-- Large card -->
+              <div class="bento-item bento-lg">
+                <article class="bento-card">
+                  <span class="spotlight" aria-hidden="true"></span>
+
+                  <div class="card-top">
+                    <span class="card-num" aria-hidden="true">01</span><span class="card-rule" aria-hidden="true"></span>
+                  </div>
+                  <ul class="tags" aria-label="מאפיינים">
+                    <li>60–90 דק׳</li>
+                    <li>מגע עמוק ועדין</li>
+                  </ul>
+                  <h3>טיפול במגע וקרקוע</h3>
+                  <p>מגע קשוב ועמוק שמזמין את הגוף להניח את המשקל, להאט ולהרגיש שוב את הקרקע מתחת לרגליים.</p>
+                  <p class="card-for"><span>מתאים ל:</span> מי שחווים עומס, כאבים או תחושת ניתוק מהגוף.</p>
+                </article>
+              </div>
+
+              <div class="bento-item">
+                <article class="bento-card">
+                  <span class="spotlight" aria-hidden="true"></span>
+                  <div class="card-top">
+                    <span class="card-num" aria-hidden="true">02</span><span class="card-rule" aria-hidden="true"></span>
+                  </div>
+                  <ul class="tags" aria-label="מאפיינים">
+                    <li>נשימה</li>
+                    <li>מודעות גופנית</li>
+                  </ul>
+                  <h3>איזון גוף-נפש</h3>
+                  <p>עבודה עדינה עם נשימה, תנועה ומודעות גופנית, שמשחררת את מה שנאגר ומחברת בין הלב לגוף.</p>
+                  <p class="card-for"><span>מתאים ל:</span> תקופות של שינוי, חרדה או רגשות מציפים.</p>
+                </article>
+              </div>
+
+              <div class="bento-item">
+                <article class="bento-card">
+                  <span class="spotlight" aria-hidden="true"></span>
+                  <div class="card-top">
+                    <span class="card-num" aria-hidden="true">03</span><span class="card-rule" aria-hidden="true"></span>
+                  </div>
+                  <ul class="tags" aria-label="מאפיינים">
+                    <li>שקט</li>
+                    <li>מנוחה עמוקה</li>
+                  </ul>
+                  <h3>מרחב לפריקה וטעינה</h3>
+                  <p>שעה שקטה שכולה שלך: מקום בטוח להניח את מה שכבד, לנוח באמת ולצאת עם מצברים מלאים.</p>
+                  <p class="card-for"><span>מתאים ל:</span> הורים, אנשי טיפול ומי שנותנים הרבה לאחרים.</p>
+                </article>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /.stage -->
+
+      <!-- Scroll distance that drives the camera from canopy to roots -->
+      <div class="journey-track" aria-hidden="true"></div>
+
+      <!-- ===== Phase 3 — Roots: FAQ + contact, scrolling over the roots ===== -->
+      <div class="roots">
+
+        <section class="faq" id="faq" aria-labelledby="faqTitle">
+          <div class="container">
+            <header class="panel-header reveal">
+              <span class="badge">שאלות נפוצות</span>
+              <h2 id="faqTitle" class="panel-title">לפני שנפגשים</h2>
+              <p class="panel-sub">כמה דברים שכדאי לדעת – ואם נשארה שאלה, אני כאן.</p>
+            </header>
+
+            <div class="faq-list">
+              <div class="faq-item reveal">
+                <h3 class="faq-q">
+                  <button class="faq-trigger" type="button" id="faq-q1" aria-expanded="false" aria-controls="faq-a1">
+                    <span>איך מתנהל המפגש הראשון?</span>
+                    <span class="faq-icon" aria-hidden="true"></span>
+                  </button>
+                </h3>
+                <div class="faq-panel" id="faq-a1" role="region" aria-labelledby="faq-q1">
+                  <div class="faq-panel-inner">
+                    <p>המפגש הראשון מתחיל בשיחה רגועה: מה הביא אותך, איך הגוף מרגיש ומה היית רוצה לקחת מהתהליך. משם נעבור בהדרגה לטיפול עצמו – בקצב שלך, עם הסבר על כל שלב ובהסכמה מלאה. אין צורך בהכנה מיוחדת, רק להגיע בבגדים נוחים.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="faq-item reveal">
+                <h3 class="faq-q">
+                  <button class="faq-trigger" type="button" id="faq-q2" aria-expanded="false" aria-controls="faq-a2">
+                    <span>למי הטיפולים מתאימים?</span>
+                    <span class="faq-icon" aria-hidden="true"></span>
+                  </button>
+                </h3>
+                <div class="faq-panel" id="faq-a2" role="region" aria-labelledby="faq-q2">
+                  <div class="faq-panel-inner">
+                    <p>לכל מי שמרגישים עומס, מתח, כאבים או ניתוק מהגוף; לתקופות של שינוי, שחיקה או רגשות מציפים; ולכל מי שפשוט צריכים רגע של שקט. כל מפגש נבנה אישית סביב מה שנכון לך עכשיו.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="faq-item reveal">
+                <h3 class="faq-q">
+                  <button class="faq-trigger" type="button" id="faq-q3" aria-expanded="false" aria-controls="faq-a3">
+                    <span>איפה מתקיימים הטיפולים?</span>
+                    <span class="faq-icon" aria-hidden="true"></span>
+                  </button>
+                </h3>
+                <div class="faq-panel" id="faq-a3" role="region" aria-labelledby="faq-q3">
+                  <div class="faq-panel-inner">
+                    <p>הטיפולים מתקיימים בקליניקה פרטית ושקטה, בימים א׳–ה׳ בשעות הבוקר והערב. את הכתובת המדויקת והוראות ההגעה אשלח עם תיאום המפגש.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="faq-item reveal">
+                <h3 class="faq-q">
+                  <button class="faq-trigger" type="button" id="faq-q4" aria-expanded="false" aria-controls="faq-a4">
+                    <span>כמה זמן נמשך מפגש, וכמה מפגשים צריך?</span>
+                    <span class="faq-icon" aria-hidden="true"></span>
+                  </button>
+                </h3>
+                <div class="faq-panel" id="faq-a4" role="region" aria-labelledby="faq-q4">
+                  <div class="faq-panel-inner">
+                    <p>מפגש נמשך בין 60 ל־90 דקות. יש מי שמגיעים למפגש בודד של פריקה, ויש מי שבוחרים בתהליך של כמה מפגשים – נחליט על זה יחד, בלי התחייבות מראש.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="faq-item reveal">
+                <h3 class="faq-q">
+                  <button class="faq-trigger" type="button" id="faq-q5" aria-expanded="false" aria-controls="faq-a5">
+                    <span>מה אם לא נוח לי עם מגע?</span>
+                    <span class="faq-icon" aria-hidden="true"></span>
+                  </button>
+                </h3>
+                <div class="faq-panel" id="faq-a5" role="region" aria-labelledby="faq-q5">
+                  <div class="faq-panel-inner">
+                    <p>זה בסדר גמור. לפני כל מגע נדבר על מה שמרגיש לך נכון, ואפשר לעצור, לשנות או לוותר בכל רגע. אפשר גם לעבוד בלבוש מלא, או להתמקד בנשימה ובמודעות גופנית בלבד.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="contact" id="contact" aria-labelledby="contactTitle">
+          <div class="container">
+            <div class="contact-card reveal">
+              <span class="spotlight" aria-hidden="true"></span>
+
+              <span class="badge">
+                <span class="badge-dot" aria-hidden="true"></span>
+                בואו נדבר
+              </span>
+              <h2 id="contactTitle" class="panel-title">נשמע מתאים? בואי נדבר</h2>
+              <p class="contact-sub">אפשר לפנות אליי בוואטסאפ או במייל לכל שאלה, התייעצות או תיאום טיפול.</p>
+
+              <div class="contact-actions">
+                <a class="btn btn-light btn-shimmer js-whatsapp" href="https://wa.me/972XXXXXXXXX" target="_blank" rel="noopener">
+                  <svg class="btn-icon icon-wa" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg>
+                  <span>שליחת הודעה בוואטסאפ</span>
+                </a>
+                <a class="btn btn-glass js-email" href="mailto:may@example.com">
+                  <svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Zm0 2v.4l8 5 8-5V7H4Zm16 2.8-7.5 4.7a1 1 0 0 1-1 0L4 9.8V17h16V9.8Z"/></svg>
+                  <span>שליחת מייל</span>
+                </a>
+              </div>
+
+              <ul class="contact-meta">
+                <li>
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+                  קליניקה פרטית ושקטה
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                  א׳–ה׳ · בוקר וערב
+                </li>
+                <li>
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l4 4 10-10"/></svg>
+                  מענה תוך יום עבודה
+                </li>
+              </ul>
+
+              <p class="copy-feedback" id="copyFeedback" role="status" aria-live="polite"></p>
+
+              <div class="bio" id="about">
+                <div class="bio-chip">
+                  <span class="bio-avatar">
+                    <img src="assets/may.jpg" alt="מאי" width="80" height="80" loading="lazy"
+                         onerror="this.parentElement.classList.add('is-placeholder'); this.remove();">
+                    <span class="bio-avatar-fallback" aria-hidden="true">מ</span>
+                  </span>
+                  <span class="bio-id">
+                    <strong>מאי</strong>
+                    <span>מטפלת במגע ובאיזון גוף-נפש</span>
+                  </span>
+                </div>
+                <p class="bio-text">
+                  הדרך שלי לטיפול התחילה כשהגוף שלי ביקש ממני לעצור ולהקשיב.
+                  היום אני מלווה אנשים לחזור לקרקע – בקצב שלהם, בביטחון ובהקשבה מלאה.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div><!-- /.roots -->
+    </section>
+
+  </main>
+
+  <!-- ================= Footer ================= -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>© <span id="year">2026</span> מאי · טיפול במגע ואיזון גוף-נפש. כל הזכויות שמורות.</p>
+      <p class="footer-credit">נבנה באהבה ובנשימה עמוקה 🌿</p>
+    </div>
+  </footer>
+
+  <!-- ================= Floating WhatsApp ================= -->
+  <a class="fab js-whatsapp" href="https://wa.me/972XXXXXXXXX" target="_blank" rel="noopener" aria-label="שליחת הודעה בוואטסאפ">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg>
+  </a>
+
+  <!-- Film grain: fixed, tactile paper texture over everything -->
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <script src="js/script.js" defer></script>
+</body>
+</html>
