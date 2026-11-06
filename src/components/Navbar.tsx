@@ -2,6 +2,7 @@ import { useEffect, useState, type MouseEvent } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowLeft } from 'lucide-react'
 import { goToSection } from '../config'
+import { scrollToTarget } from '../lib/smoothScroll'
 import { cn } from '../lib/cn'
 
 const LINKS = [
@@ -45,7 +46,7 @@ export default function Navbar() {
         aria-label="ניווט ראשי"
         className="glass flex w-full max-w-3xl items-center justify-between gap-2 rounded-full !bg-primary/60 py-1.5 pe-1.5 ps-5"
       >
-        <a href="#top" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }) }} className="font-serif text-2xl font-medium text-forest-moss">
+        <a href="#top" onClick={(e) => { e.preventDefault(); scrollToTarget(0) }} className="font-serif text-2xl font-medium text-forest-moss">
           מאי
         </a>
 

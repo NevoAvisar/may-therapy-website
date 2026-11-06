@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ArrowLeft, Leaf } from 'lucide-react'
 import ScrollExpandMedia from './components/ScrollExpandMedia'
 import Navbar from './components/Navbar'
@@ -10,6 +10,7 @@ import ContactSection from './components/ContactSection'
 import FloatingWhatsApp from './components/FloatingWhatsApp'
 import Reveal from './components/Reveal'
 import { goToSection } from './config'
+import { addRestPoint, initSmoothScroll, sectionTop } from './lib/smoothScroll'
 
 /* Hero imagery – swap for your own (e.g. put tree.jpg in /public and use '/tree.jpg'). */
 const HERO = {
@@ -78,8 +79,22 @@ function IntroSection() {
   )
 }
 
+// Each chapter of the page gets a soft resting point at its top.
+const REST_AT = ['intro', 'treatments', 'faq', 'about', 'contact']
+
 export default function App() {
   const [heroExpanded, setHeroExpanded] = useState(false)
+
+  useEffect(() => initSmoothScroll(), [])
+  useEffect(() => {
+    const removers = REST_AT.map((id) =>
+      addRestPoint(() => {
+        const el = document.getElementById(id)
+        return el ? sectionTop(el) : null
+      }),
+    )
+    return () => removers.forEach((remove) => remove())
+  }, [])
 
   return (
     <div dir="rtl" id="top" className="relative min-h-screen bg-primary text-forest-moss">

@@ -36,3 +36,15 @@
     @apply mx-auto w-full max-w-6xl pe-5 ps-12 sm:pe-8 sm:ps-20 xl:px-8;
   }
 }
+
+/* Lenis smooth scrolling */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}

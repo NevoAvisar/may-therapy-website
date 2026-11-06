@@ -5,6 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ChevronDown } from 'lucide-react'
 import { HERO_EXPAND_EVENT } from '../config'
 import { cn } from '../lib/cn'
+import { addRestPoint, scrollToTarget } from '../lib/smoothScroll'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -34,9 +35,12 @@ interface ScrollExpandMediaProps {
 }
 
 /** Scroll distance of the pin, in % of the viewport height. */
-const PIN_LENGTH = '+=140%'
+const PIN_LENGTH = '+=170%'
 /** Share of the pin spent resting at full bleed before the page takes over. */
 const HOLD = 0.2
+
+/** Scroll position at which the media first fills the viewport (before the hold). */
+const fullBleedAt = (st: ScrollTrigger | null) => (st ? st.start + (st.end - st.start) / (1 + HOLD) : null)
 
 /** Deterministic 0–1 noise, so every render (and reload) scatters the letters the same way. */
 const noise = (n: number) => {
@@ -140,7 +144,7 @@ export default function ScrollExpandMedia({
           start: 'top top',
           end: PIN_LENGTH,
           pin: true,
-          scrub: 1,
+          scrub: 1.6, // the media follows the scroll with a slow, breathing lag
           anticipatePin: 1,
           invalidateOnRefresh: true,
         },
@@ -166,7 +170,14 @@ export default function ScrollExpandMedia({
       triggerRef.current = tl.scrollTrigger ?? null
     }, section)
 
+    // Two resting points: the compact opening frame, and the moment the media fills the screen.
+    const removeRests = [
+      addRestPoint(() => triggerRef.current?.start ?? null),
+      addRestPoint(() => fullBleedAt(triggerRef.current)),
+    ]
+
     return () => {
+      removeRests.forEach((remove) => remove())
       triggerRef.current = null
       ctx.revert()
     }
@@ -176,23 +187,21 @@ export default function ScrollExpandMedia({
     onExpandChange?.(mediaFullyExpanded)
   }, [mediaFullyExpanded, onExpandChange])
 
-  // In-page links: native smooth scroll passes through the pin, so the scrub plays on the way.
+  // In-page links: the glide passes through the pin, so the scrub plays on the way.
   useEffect(() => {
     const handleExpandRequest = (e: Event) => {
       const targetId = (e as CustomEvent<{ targetId?: string }>).detail?.targetId
       const el = targetId ? document.getElementById(targetId) : null
-      el?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' })
+      if (el) scrollToTarget(el)
     }
     window.addEventListener(HERO_EXPAND_EVENT, handleExpandRequest)
     return () => window.removeEventListener(HERO_EXPAND_EVENT, handleExpandRequest)
-  }, [reduceMotion])
+  }, [])
 
   /** "Scroll to expand" button: glide to the moment the media reaches full bleed. */
   const expandNow = () => {
-    const st = triggerRef.current
-    if (!st) return
-    const fullAt = st.start + (st.end - st.start) / (1 + HOLD)
-    window.scrollTo({ top: fullAt, behavior: 'smooth' })
+    const fullAt = fullBleedAt(triggerRef.current)
+    if (fullAt != null) scrollToTarget(fullAt)
   }
 
   const [firstWord, ...rest] = title.trim().split(/\s+/)
