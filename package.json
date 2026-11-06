@@ -6,8 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview",
-    "roots": "node scripts/render-roots.ts"
+    "preview": "vite preview"
   },
   "dependencies": {
     "clsx": "^2.1.1",
