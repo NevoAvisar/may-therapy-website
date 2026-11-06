@@ -39,6 +39,12 @@ const PIN_LENGTH = '+=170%'
 /** Share of the pin spent resting at full bleed before the page takes over. */
 const HOLD = 0.2
 
+/** Edge feather of the compact media: two gradients intersected, so all four sides fade. */
+const FEATHER_X =
+  'linear-gradient(to right, transparent, #000 var(--feather), #000 calc(100% - var(--feather)), transparent)'
+const FEATHER_Y =
+  'linear-gradient(to bottom, transparent, #000 var(--feather), #000 calc(100% - var(--feather)), transparent)'
+
 /** Scroll position at which the media first fills the viewport (before the hold). */
 const fullBleedAt = (st: ScrollTrigger | null) => (st ? st.start + (st.end - st.start) / (1 + HOLD) : null)
 
@@ -214,10 +220,23 @@ export default function ScrollExpandMedia({
     '--h0': 'min(440px, 58dvh)',
     width: 'calc(var(--w0) + (100vw - var(--w0)) * var(--p))',
     height: 'calc(var(--h0) + (100dvh - var(--h0)) * var(--p))',
-    borderRadius: 'calc(28px * (1 - var(--p)))',
-    boxShadow:
-      '0 calc(30px * (1 - var(--p))) calc(80px * (1 - var(--p))) -20px rgba(30, 44, 36, calc(0.55 * (1 - var(--p))))',
   } as CSSProperties
+
+  // The compact frame melts into the forest: feathered edges, a touch of translucency and softer
+  // light. All of it eases out with `--p`, and is dropped at full bleed so the media renders untouched.
+  const blendStyle = (
+    mediaFullyExpanded
+      ? {}
+      : {
+          '--feather': 'max(0px, calc(min(64px, 12vw) * (1 - var(--p) * 1.12)))',
+          maskImage: `${FEATHER_X}, ${FEATHER_Y}`,
+          WebkitMaskImage: `${FEATHER_X}, ${FEATHER_Y}`,
+          maskComposite: 'intersect',
+          WebkitMaskComposite: 'source-in',
+          opacity: 'calc(0.82 + var(--p) * 0.18)',
+          filter: 'brightness(calc(0.95 + var(--p) * 0.05)) contrast(calc(0.95 + var(--p) * 0.05))',
+        }
+  ) as CSSProperties
 
   const driftOut = (dir: 1 | -1, fade = 'calc(1 - var(--p))'): CSSProperties => ({
     transform: `translate3d(calc(${dir * 110}vw * var(--p)), 0, 0)`,
@@ -243,43 +262,51 @@ export default function ScrollExpandMedia({
           </div>
 
           {/* Floating framed media */}
-          <div
-            className="relative z-10 overflow-hidden ring-1 ring-white/30 will-change-[width,height,transform]"
-            style={mediaStyle}
-          >
-            {mediaType === 'video' ? (
-              <video
-                src={mediaSrc}
-                poster={posterSrc}
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="auto"
-                className="h-full w-full object-cover"
-                aria-hidden
-              />
-            ) : (
-              <img src={mediaSrc} alt="" className="h-full w-full object-cover" decoding="async" />
-            )}
+          <div className="relative z-10 will-change-[width,height,transform]" style={mediaStyle}>
+            {/* Diffused ambient shadow – a blurred layer, since the feather mask would clip a box-shadow */}
             <div
               aria-hidden
-              className="pointer-events-none absolute inset-0 bg-forest-moss"
-              style={{ opacity: 'calc(0.38 - var(--p) * 0.18)' }}
+              className="absolute inset-[6%] translate-y-3 bg-[rgba(20,35,25,0.18)] blur-[40px]"
+              style={{ opacity: 'calc(1 - var(--p))' }}
             />
+            <div
+              className="absolute inset-0 overflow-hidden will-change-[opacity,filter]"
+              style={{ borderRadius: 'calc(28px * (1 - var(--p)))', ...blendStyle }}
+            >
+              {mediaType === 'video' ? (
+                <video
+                  src={mediaSrc}
+                  poster={posterSrc}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="auto"
+                  className="h-full w-full object-cover"
+                  aria-hidden
+                />
+              ) : (
+                <img src={mediaSrc} alt="" className="h-full w-full object-cover" decoding="async" />
+              )}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 bg-forest-moss"
+                style={{ opacity: 'calc(0.38 - var(--p) * 0.18)' }}
+              />
 
-            {expandedCaption && (
-              <motion.div
-                className="absolute inset-0 flex items-center justify-center px-6"
-                initial={false}
-                animate={mediaFullyExpanded ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
-                transition={{ duration: 0.8, ease: [0.22, 0.61, 0.36, 1] }}
-                style={{ pointerEvents: mediaFullyExpanded ? 'auto' : 'none' }}
-                aria-hidden={!mediaFullyExpanded}
-              >
-                {expandedCaption}
-              </motion.div>
-            )}
+              {expandedCaption && (
+                <motion.div
+                  className="absolute inset-0 flex items-center justify-center px-6"
+                  initial={false}
+                  animate={mediaFullyExpanded ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
+                  transition={{ duration: 0.8, ease: [0.22, 0.61, 0.36, 1] }}
+                  style={{ pointerEvents: mediaFullyExpanded ? 'auto' : 'none' }}
+                  aria-hidden={!mediaFullyExpanded}
+                >
+                  {expandedCaption}
+                </motion.div>
+              )}
+            </div>
           </div>
 
           {/* Split headline – vaporises letter by letter as the media expands */}
