@@ -22,13 +22,13 @@ export default function ContactSection() {
     <section
       id="contact"
       aria-labelledby="contact-title"
-      className="relative isolate overflow-x-clip bg-gradient-to-b from-primary via-flower-center/40 to-[#E9DCCB] pb-56 pt-24 md:pb-80 md:pt-32"
+      className="relative isolate overflow-x-clip pb-56 pt-24 md:pb-80 md:pt-32"
     >
       <WoodlandRoots />
 
       <div className="page-container max-w-4xl">
         <Reveal>
-          <div className="glass relative rounded-[32px] p-8 text-center md:p-14">
+          <div className="glass relative rounded-[32px] !bg-primary/[0.82] p-8 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.55),0_30px_70px_-30px_rgba(27,19,13,0.55)] backdrop-blur-[16px] md:p-14">
             <span className="glass-mist inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm text-stream-blue">
               <MessageCircleHeart className="h-4 w-4" aria-hidden />
               בואו נדבר

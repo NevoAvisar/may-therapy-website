@@ -130,10 +130,11 @@ export default function App() {
           <ContactSection />
         </main>
 
-        <footer className="relative -mt-px bg-[#2A211B] pb-8">
-          <div className="page-container flex flex-col items-center justify-between gap-2 pt-6 text-sm text-primary/75 sm:flex-row">
-            <p>© {new Date().getFullYear()} מאי · טיפול במגע ואיזון גוף-נפש</p>
-            <p>נבנה באהבה ובנשימה עמוקה 🌿</p>
+        {/* Sits over the bottom of the forest photo; its height is matched in WoodlandRoots */}
+        <footer className="relative flex h-28 items-center sm:h-20">
+          <div className="page-container flex w-full flex-col items-center justify-between gap-1.5 text-sm text-primary [text-shadow:0_1px_3px_rgba(0,0,0,0.6)] sm:flex-row">
+            <p className="rounded-full bg-black/25 px-4 py-1 backdrop-blur-sm">© {new Date().getFullYear()} מאי · טיפול במגע ואיזון גוף-נפש</p>
+            <p className="rounded-full bg-black/25 px-4 py-1 backdrop-blur-sm">נבנה באהבה ובנשימה עמוקה 🌿</p>
           </div>
         </footer>
       </ScrollExpandMedia>
