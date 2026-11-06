@@ -9,6 +9,7 @@ export default function FloatingWhatsApp({ visible = true }: { visible?: boolean
       {visible && (
         <motion.a
           href={whatsappUrl}
+          data-sun-beacon
           target="_blank"
           rel="noopener noreferrer"
           aria-label="שליחת הודעה בוואטסאפ"

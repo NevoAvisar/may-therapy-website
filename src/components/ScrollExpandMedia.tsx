@@ -149,6 +149,18 @@ export default function ScrollExpandMedia({
     }
 
     let expanded = false
+    let scrubbed = false
+    // Past the pin counts too: a reload further down the page restores the scroll after the first
+    // refresh, jumping the scrub to its end without playing the tween's onUpdate.
+    const syncExpanded = () => {
+      const st = triggerRef.current
+      const next = scrubbed || (st != null && window.scrollY >= st.end)
+      if (next !== expanded) {
+        expanded = next
+        setMediaFullyExpanded(next)
+      }
+    }
+
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -159,6 +171,7 @@ export default function ScrollExpandMedia({
           scrub: 1.6, // the media follows the scroll with a slow, breathing lag
           anticipatePin: 1,
           invalidateOnRefresh: true,
+          onRefresh: syncExpanded,
         },
       })
       tl.fromTo(
@@ -169,11 +182,8 @@ export default function ScrollExpandMedia({
           ease: 'none',
           duration: 1,
           onUpdate() {
-            const next = this.progress() >= 0.999
-            if (next !== expanded) {
-              expanded = next
-              setMediaFullyExpanded(next)
-            }
+            scrubbed = this.progress() >= 0.999
+            syncExpanded()
           },
         },
       )
@@ -181,6 +191,9 @@ export default function ScrollExpandMedia({
       tl.to({}, { duration: HOLD })
       triggerRef.current = tl.scrollTrigger ?? null
     }, section)
+
+    syncExpanded()
+    window.addEventListener('scroll', syncExpanded, { passive: true })
 
     // Two resting points: the compact opening frame, and the moment the media fills the screen.
     const removeRests = [
@@ -190,6 +203,7 @@ export default function ScrollExpandMedia({
 
     return () => {
       removeRests.forEach((remove) => remove())
+      window.removeEventListener('scroll', syncExpanded)
       triggerRef.current = null
       ctx.revert()
     }

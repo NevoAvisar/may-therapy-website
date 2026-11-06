@@ -8,6 +8,7 @@ import FaqSection from './components/FaqSection'
 import AboutSection from './components/AboutSection'
 import ContactSection from './components/ContactSection'
 import FloatingWhatsApp from './components/FloatingWhatsApp'
+import SunCursor from './components/SunCursor'
 import Reveal from './components/Reveal'
 import { goToSection } from './config'
 import { addRestPoint, initSmoothScroll, sectionTop } from './lib/smoothScroll'
@@ -35,6 +36,7 @@ function ExpandedCaption() {
       <div className="flex flex-wrap justify-center gap-3">
         <button
           type="button"
+          data-sun-beacon
           onClick={() => goToSection('contact')}
           className="inline-flex items-center gap-2 rounded-full bg-stream-blue px-6 py-3 font-medium text-primary transition hover:bg-forest-moss"
         >
@@ -141,6 +143,7 @@ export default function App() {
 
       <FloatingWhatsApp visible={heroExpanded} />
       <div aria-hidden className="paper-grain" />
+      <SunCursor />
     </div>
   )
 }

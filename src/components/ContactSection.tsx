@@ -43,6 +43,7 @@ export default function ContactSection() {
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <a
                 href={whatsappUrl}
+                data-sun-beacon
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2.5 rounded-full bg-stream-blue px-7 py-3.5 font-medium text-primary shadow-bloom transition hover:bg-forest-moss"
@@ -52,6 +53,7 @@ export default function ContactSection() {
               </a>
               <a
                 href={mailtoUrl}
+                data-sun-beacon
                 onClick={copyEmail}
                 className="glass inline-flex items-center gap-2.5 rounded-full px-7 py-3.5 font-medium text-forest-moss transition hover:!bg-white/70"
               >
