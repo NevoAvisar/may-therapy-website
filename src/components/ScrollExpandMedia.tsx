@@ -45,6 +45,12 @@ const FEATHER_X =
 const FEATHER_Y =
   'linear-gradient(to bottom, transparent, #000 var(--feather), #000 calc(100% - var(--feather)), transparent)'
 
+/** Dissolves the media's bottom edge; `--mist` (0 → 1 over the end of the scrub) grows it to 25%. */
+const MIST_MASK = 'linear-gradient(to bottom, #000 calc(100% - 25% * var(--mist)), transparent 100%)'
+/** Into the exact page background, so nothing marks where the hero ends and the next section begins. */
+const MIST_FADE =
+  'linear-gradient(to bottom, rgba(246, 244, 240, 0) 0%, rgba(220, 232, 227, 0.25) 35%, rgba(246, 244, 240, 0.75) 70%, #F6F4F0 100%)'
+
 /** Scroll position at which the media first fills the viewport (before the hold). */
 const fullBleedAt = (st: ScrollTrigger | null) => (st ? st.start + (st.end - st.start) / (1 + HOLD) : null)
 
@@ -252,7 +258,12 @@ export default function ScrollExpandMedia({
           ref={sectionRef}
           aria-label="פתיחה"
           className="relative flex h-[100dvh] items-center justify-center overflow-hidden bg-forest-moss"
-          style={{ '--p': reduceMotion ? 1 : 0 } as CSSProperties}
+          style={
+            {
+              '--p': reduceMotion ? 1 : 0,
+              '--mist': 'clamp(0, calc((var(--p) - 0.6) / 0.4), 1)',
+            } as CSSProperties
+          }
         >
           {/* Ambient atmospheric background */}
           <div aria-hidden className="absolute inset-0" style={{ opacity: 'calc(1 - var(--p))' }}>
@@ -260,6 +271,13 @@ export default function ScrollExpandMedia({
             <div className="absolute inset-0 bg-gradient-to-b from-forest-moss/30 via-forest-moss/10 to-forest-moss/50" />
             <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-river-mist/25 to-transparent" />
           </div>
+
+          {/* Cream beneath the media, so its dissolving edge melts into the page rather than the moss backdrop */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-[32dvh]"
+            style={{ opacity: 'var(--mist)', background: 'linear-gradient(to bottom, transparent, #F6F4F0 60%)' }}
+          />
 
           {/* Floating framed media */}
           <div className="relative z-10 will-change-[width,height,transform]" style={mediaStyle}>
@@ -273,26 +291,28 @@ export default function ScrollExpandMedia({
               className="absolute inset-0 overflow-hidden will-change-[opacity,filter]"
               style={{ borderRadius: 'calc(28px * (1 - var(--p)))', ...blendStyle }}
             >
-              {mediaType === 'video' ? (
-                <video
-                  src={mediaSrc}
-                  poster={posterSrc}
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  preload="auto"
-                  className="h-full w-full object-cover"
+              <div className="absolute inset-0" style={{ maskImage: MIST_MASK, WebkitMaskImage: MIST_MASK }}>
+                {mediaType === 'video' ? (
+                  <video
+                    src={mediaSrc}
+                    poster={posterSrc}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="auto"
+                    className="h-full w-full object-cover"
+                    aria-hidden
+                  />
+                ) : (
+                  <img src={mediaSrc} alt="" className="h-full w-full object-cover" decoding="async" />
+                )}
+                <div
                   aria-hidden
+                  className="pointer-events-none absolute inset-0 bg-forest-moss"
+                  style={{ opacity: 'calc(0.38 - var(--p) * 0.18)' }}
                 />
-              ) : (
-                <img src={mediaSrc} alt="" className="h-full w-full object-cover" decoding="async" />
-              )}
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-0 bg-forest-moss"
-                style={{ opacity: 'calc(0.38 - var(--p) * 0.18)' }}
-              />
+              </div>
 
               {expandedCaption && (
                 <motion.div
@@ -308,6 +328,13 @@ export default function ScrollExpandMedia({
               )}
             </div>
           </div>
+
+          {/* Morning mist over the hero's bottom edge – under the headline, gone at the opening frame */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 bottom-0 z-[15] h-[32dvh]"
+            style={{ opacity: 'var(--mist)', background: MIST_FADE }}
+          />
 
           {/* Split headline – vaporises letter by letter as the media expands */}
           <h1

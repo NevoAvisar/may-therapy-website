@@ -60,6 +60,8 @@ function IntroSection() {
       aria-labelledby="intro-title"
       className="relative isolate flex min-h-[75svh] items-center py-24 md:min-h-[85svh]"
     >
+      {/* Mist carried over from the hero, so the content rises out of it */}
+      <div aria-hidden className="absolute inset-x-0 top-0 -z-10 h-48 bg-gradient-to-b from-primary via-river-mist/40 to-transparent" />
       <div
         aria-hidden
         className="absolute inset-x-0 top-1/2 -z-10 mx-auto h-[26rem] max-w-4xl -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(220,232,227,0.9),rgba(245,229,201,0.35)_55%,transparent_75%)] blur-2xl"
