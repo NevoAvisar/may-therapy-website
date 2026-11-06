@@ -130,8 +130,8 @@ export default function App() {
           <ContactSection />
         </main>
 
-        <footer className="bg-[#E9DCCB] pb-8">
-          <div className="page-container flex flex-col items-center justify-between gap-2 border-t border-bark-toned/15 pt-6 text-sm text-bark-toned sm:flex-row">
+        <footer className="relative -mt-px bg-[#2A211B] pb-8">
+          <div className="page-container flex flex-col items-center justify-between gap-2 pt-6 text-sm text-primary/75 sm:flex-row">
             <p>© {new Date().getFullYear()} מאי · טיפול במגע ואיזון גוף-נפש</p>
             <p>נבנה באהבה ובנשימה עמוקה 🌿</p>
           </div>

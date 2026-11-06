@@ -1,8 +1,8 @@
 import { motion, useReducedMotion } from 'framer-motion'
 
 /**
- * Woodland roots beneath the contact card: a painted image (see scripts/render-roots.ts) anchored by
- * earth, shade and mist layers, so it sits in the page rather than on it.
+ * Trunk, roots and forest floor beneath the contact card: a painted image (see scripts/render-roots.ts)
+ * with shade and mist layers that seat it against the card and the footer.
  */
 export default function WoodlandRoots() {
   const reduceMotion = useReducedMotion()
@@ -22,9 +22,6 @@ export default function WoodlandRoots() {
       whileInView="shown"
       viewport={{ once: true }}
     >
-      {/* Earth the roots push through */}
-      <div className="absolute inset-x-0 bottom-0 mx-auto h-full max-w-6xl bg-[radial-gradient(ellipse_at_50%_100%,rgba(74,59,44,0.26),rgba(110,90,71,0.1)_48%,transparent_72%)] blur-xl" />
-
       <motion.div className="absolute inset-0" variants={spread}>
         {/* Cropped like `xMidYMin slice`: the trunk stays under the card, the sides run off the page */}
         <img
@@ -39,11 +36,11 @@ export default function WoodlandRoots() {
       </motion.div>
 
       {/* Shade where the roots leave the card, with mist drifting off to the sides */}
-      <div className="absolute inset-x-0 top-0 mx-auto h-28 max-w-2xl bg-[radial-gradient(ellipse_at_50%_0%,rgba(46,35,24,0.5),rgba(74,59,44,0.18)_45%,transparent_72%)] blur-md" />
-      <div className="absolute inset-x-0 top-2 h-36 bg-[radial-gradient(ellipse_30%_50%_at_16%_50%,rgba(246,244,240,0.6),transparent),radial-gradient(ellipse_30%_50%_at_84%_50%,rgba(246,244,240,0.6),transparent)]" />
+      <div className="absolute inset-x-0 top-0 mx-auto h-28 max-w-2xl bg-[radial-gradient(ellipse_at_50%_0%,rgba(27,19,13,0.7),rgba(46,35,24,0.28)_45%,transparent_72%)] blur-md" />
+      <div className="absolute inset-x-0 top-2 hidden h-36 bg-[radial-gradient(ellipse_30%_50%_at_16%_50%,rgba(246,244,240,0.6),transparent),radial-gradient(ellipse_30%_50%_at_84%_50%,rgba(246,244,240,0.6),transparent)] md:block" />
 
-      {/* The roots sink into the earth above the footer */}
-      <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent via-[#E9DCCB]/70 to-[#E9DCCB]" />
+      {/* The forest floor carries straight on into the footer */}
+      <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-b from-transparent to-[#2A211B]" />
     </motion.div>
   )
 }
