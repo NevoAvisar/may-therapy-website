@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { Clock, Mail, MapPin, MessageCircleHeart } from 'lucide-react'
+import { CalendarDays, Clock, Mail, MapPin, MessageCircleHeart } from 'lucide-react'
 import Reveal from './Reveal'
 import WhatsAppIcon from './WhatsAppIcon'
 import WoodlandRoots from './WoodlandRoots'
-import { CONTACT, mailtoUrl, whatsappUrl } from '../config'
+import { CONTACT, mailtoUrl, openBooking, whatsappUrl } from '../config'
 
 export default function ContactSection() {
   const [copied, setCopied] = useState(false)
@@ -37,18 +37,27 @@ export default function ContactSection() {
               נשמע מתאים? בואו נדבר
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-forest-moss/75">
-              אפשר לפנות אליי בוואטסאפ או במייל לכל שאלה, התייעצות או תיאום טיפול.
+              אפשר לבחור מועד לשיחת היכרות, או לפנות אליי בוואטסאפ או במייל לכל שאלה והתייעצות.
             </p>
 
-            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <div className="mt-8 flex flex-col flex-wrap items-center justify-center gap-3 sm:flex-row">
+              <button
+                type="button"
+                data-sun-beacon
+                onClick={openBooking}
+                className="inline-flex items-center gap-2.5 rounded-full bg-stream-blue px-7 py-3.5 font-medium text-primary shadow-bloom transition hover:bg-forest-moss"
+              >
+                <CalendarDays className="h-5 w-5" aria-hidden />
+                תיאום שיחת היכרות
+              </button>
               <a
                 href={whatsappUrl}
                 data-sun-beacon
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2.5 rounded-full bg-stream-blue px-7 py-3.5 font-medium text-primary shadow-bloom transition hover:bg-forest-moss"
+                className="glass inline-flex items-center gap-2.5 rounded-full px-7 py-3.5 font-medium text-forest-moss transition hover:!bg-white/70"
               >
-                <WhatsAppIcon className="h-5 w-5" />
+                <WhatsAppIcon className="h-5 w-5 text-stream-blue" />
                 שליחת הודעה בוואטסאפ
               </a>
               <a

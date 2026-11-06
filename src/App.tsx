@@ -8,9 +8,10 @@ import FaqSection from './components/FaqSection'
 import AboutSection from './components/AboutSection'
 import ContactSection from './components/ContactSection'
 import FloatingWhatsApp from './components/FloatingWhatsApp'
+import BookingDialog from './components/BookingDialog'
 import SunCursor from './components/SunCursor'
 import Reveal from './components/Reveal'
-import { goToSection } from './config'
+import { goToSection, openBooking } from './config'
 import { addRestPoint, initSmoothScroll, sectionTop } from './lib/smoothScroll'
 
 /* Hero imagery – swap for your own (e.g. put tree.jpg in /public and use '/tree.jpg'). */
@@ -37,7 +38,7 @@ function ExpandedCaption() {
         <button
           type="button"
           data-sun-beacon
-          onClick={() => goToSection('contact')}
+          onClick={openBooking}
           className="inline-flex items-center gap-2 rounded-full bg-stream-blue px-6 py-3 font-medium text-primary transition hover:bg-forest-moss"
         >
           לתיאום שיחת היכרות <ArrowLeft className="h-4 w-4" aria-hidden />
@@ -142,6 +143,7 @@ export default function App() {
       </ScrollExpandMedia>
 
       <FloatingWhatsApp visible={heroExpanded} />
+      <BookingDialog />
       <div aria-hidden className="paper-grain" />
       <SunCursor />
     </div>

@@ -79,6 +79,13 @@ export function scrollToTarget(target: number | Element) {
   lenis.scrollTo(y, { duration: Math.min(3.2, 1.2 + screens * 0.35), easing: easeInOutSine })
 }
 
+/** Freeze the page behind a modal. Scrollable areas inside it need `data-lenis-prevent`. */
+export function lockPageScroll(locked: boolean) {
+  if (!lenis) document.documentElement.style.overflow = locked ? 'hidden' : ''
+  else if (locked) lenis.stop()
+  else lenis.start()
+}
+
 export function initSmoothScroll() {
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return () => {}
 
