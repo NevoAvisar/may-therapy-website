@@ -5,7 +5,7 @@ import { BOOKING, whatsappLink } from '../config'
  * meaning Israel wall-clock time, so a client's own time zone can never shift a slot to another day.
  */
 
-export type Slot = { date: string; time: string }
+export type Slot = { date: string; time: string; minutes: number }
 
 const CLINIC_TIME_ZONE = 'Asia/Jerusalem'
 
@@ -37,7 +37,7 @@ export function addDays(date: string, days: number) {
 }
 
 /** The real instant a slot starts, with Israel's daylight saving applied for that date. */
-export function slotStart({ date, time }: Slot) {
+export function slotStart({ date, time }: Pick<Slot, 'date' | 'time'>) {
   const wallClock = Date.parse(`${date}T${time}:00Z`)
   const offsetAt = (instant: number) => {
     const p = clinicParts(new Date(instant))
@@ -94,8 +94,13 @@ function formatShortDate(date: string) {
   return `${day}.${month}.${year}`
 }
 
-export function bookingWhatsappUrl({ date, time }: Slot) {
-  return whatsappLink(BOOKING.whatsappMessage.replace('{date}', formatShortDate(date)).replace('{time}', time))
+export function bookingWhatsappUrl({ date, time, minutes }: Slot) {
+  return whatsappLink(
+    BOOKING.whatsappMessage
+      .replace('{minutes}', String(minutes))
+      .replace('{date}', formatShortDate(date))
+      .replace('{time}', time),
+  )
 }
 
 /** UTC stamp both calendar formats accept: 20261108T070000Z */
@@ -103,7 +108,7 @@ const calendarStamp = (at: Date) => at.toISOString().replace(/[-:]|\.\d{3}/g, ''
 
 function eventTimes(slot: Slot) {
   const start = slotStart(slot)
-  const end = new Date(start.getTime() + BOOKING.callMinutes * 60_000)
+  const end = new Date(start.getTime() + slot.minutes * 60_000)
   return { start: calendarStamp(start), end: calendarStamp(end) }
 }
 

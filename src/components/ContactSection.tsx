@@ -3,7 +3,8 @@ import { CalendarDays, Clock, Mail, MapPin, MessageCircleHeart } from 'lucide-re
 import Reveal from './Reveal'
 import WhatsAppIcon from './WhatsAppIcon'
 import WoodlandRoots from './WoodlandRoots'
-import { CONTACT, mailtoUrl, openBooking, whatsappUrl } from '../config'
+import ContactForm from './ContactForm'
+import { CONTACT, goToSection, mailtoUrl, whatsappUrl } from '../config'
 
 export default function ContactSection() {
   const [copied, setCopied] = useState(false)
@@ -28,7 +29,7 @@ export default function ContactSection() {
 
       <div className="page-container max-w-4xl">
         <Reveal>
-          <div className="glass relative rounded-[32px] !bg-primary/[0.82] p-8 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.55),0_30px_70px_-30px_rgba(27,19,13,0.55)] backdrop-blur-[16px] md:p-14">
+          <div className="glass relative rounded-[32px] !bg-primary/[0.82] p-5 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.55),0_30px_70px_-30px_rgba(27,19,13,0.55)] backdrop-blur-[16px] sm:p-8 md:p-14">
             <span className="glass-mist inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm text-stream-blue">
               <MessageCircleHeart className="h-4 w-4" aria-hidden />
               בואו נדבר
@@ -37,17 +38,19 @@ export default function ContactSection() {
               נשמע מתאים? בואו נדבר
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-forest-moss/75">
-              אפשר לבחור מועד לשיחת היכרות, או לפנות אליי בוואטסאפ או במייל לכל שאלה והתייעצות.
+              כתבו לי כאן לכל שאלה או התייעצות, ואחזור אליכם בהקדם. אפשר גם לבחור מועד לשיחת היכרות או לפנות ישירות בוואטסאפ ובמייל.
             </p>
+
+            <ContactForm />
 
             <div className="mt-8 flex flex-col flex-wrap items-center justify-center gap-3 sm:flex-row">
               <button
                 type="button"
                 data-sun-beacon
-                onClick={openBooking}
-                className="inline-flex items-center gap-2.5 rounded-full bg-stream-blue px-7 py-3.5 font-medium text-primary shadow-bloom transition hover:bg-forest-moss"
+                onClick={() => goToSection('booking')}
+                className="glass inline-flex w-full items-center justify-center gap-2.5 rounded-full px-6 py-3.5 font-medium text-forest-moss transition hover:!bg-white/70 sm:w-auto"
               >
-                <CalendarDays className="h-5 w-5" aria-hidden />
+                <CalendarDays className="h-5 w-5 text-stream-blue" aria-hidden />
                 תיאום שיחת היכרות
               </button>
               <a
@@ -55,7 +58,7 @@ export default function ContactSection() {
                 data-sun-beacon
                 target="_blank"
                 rel="noopener noreferrer"
-                className="glass inline-flex items-center gap-2.5 rounded-full px-7 py-3.5 font-medium text-forest-moss transition hover:!bg-white/70"
+                className="glass inline-flex w-full items-center justify-center gap-2.5 rounded-full px-6 py-3.5 font-medium text-forest-moss transition hover:!bg-white/70 sm:w-auto"
               >
                 <WhatsAppIcon className="h-5 w-5 text-stream-blue" />
                 שליחת הודעה בוואטסאפ
@@ -64,7 +67,7 @@ export default function ContactSection() {
                 href={mailtoUrl}
                 data-sun-beacon
                 onClick={copyEmail}
-                className="glass inline-flex items-center gap-2.5 rounded-full px-7 py-3.5 font-medium text-forest-moss transition hover:!bg-white/70"
+                className="glass inline-flex w-full items-center justify-center gap-2.5 rounded-full px-6 py-3.5 font-medium text-forest-moss transition hover:!bg-white/70 sm:w-auto"
               >
                 <Mail className="h-5 w-5 text-stream-blue" aria-hidden />
                 שליחת מייל

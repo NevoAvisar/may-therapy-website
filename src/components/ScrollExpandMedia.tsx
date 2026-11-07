@@ -168,7 +168,7 @@ export default function ScrollExpandMedia({
           start: 'top top',
           end: PIN_LENGTH,
           pin: true,
-          scrub: 1.6, // the media follows the scroll with a slow, breathing lag
+          scrub: 1.92, // the media follows the scroll with a slow, breathing lag
           anticipatePin: 1,
           invalidateOnRefresh: true,
           onRefresh: syncExpanded,

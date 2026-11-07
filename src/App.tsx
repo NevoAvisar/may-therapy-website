@@ -6,12 +6,12 @@ import TreeSpine from './components/TreeSpine'
 import TreatmentsSection from './components/TreatmentsSection'
 import FaqSection from './components/FaqSection'
 import AboutSection from './components/AboutSection'
+import BookingSection from './components/BookingSection'
 import ContactSection from './components/ContactSection'
 import FloatingWhatsApp from './components/FloatingWhatsApp'
-import BookingDialog from './components/BookingDialog'
 import SunCursor from './components/SunCursor'
 import Reveal from './components/Reveal'
-import { goToSection, openBooking } from './config'
+import { goToSection } from './config'
 import { addRestPoint, initSmoothScroll, sectionTop } from './lib/smoothScroll'
 
 /* Hero imagery – swap for your own (e.g. put tree.jpg in /public and use '/tree.jpg'). */
@@ -38,7 +38,7 @@ function ExpandedCaption() {
         <button
           type="button"
           data-sun-beacon
-          onClick={openBooking}
+          onClick={() => goToSection('booking')}
           className="inline-flex items-center gap-2 rounded-full bg-stream-blue px-6 py-3 font-medium text-primary transition hover:bg-forest-moss"
         >
           לתיאום שיחת היכרות <ArrowLeft className="h-4 w-4" aria-hidden />
@@ -85,7 +85,7 @@ function IntroSection() {
 }
 
 // Each chapter of the page gets a soft resting point at its top.
-const REST_AT = ['intro', 'treatments', 'faq', 'about', 'contact']
+const REST_AT = ['intro', 'treatments', 'faq', 'about', 'booking', 'contact']
 
 export default function App() {
   const [heroExpanded, setHeroExpanded] = useState(false)
@@ -130,6 +130,7 @@ export default function App() {
           <TreatmentsSection />
           <FaqSection />
           <AboutSection />
+          <BookingSection />
           <ContactSection />
         </main>
 
@@ -143,7 +144,6 @@ export default function App() {
       </ScrollExpandMedia>
 
       <FloatingWhatsApp visible={heroExpanded} />
-      <BookingDialog />
       <div aria-hidden className="paper-grain" />
       <SunCursor />
     </div>

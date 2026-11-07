@@ -26,9 +26,9 @@ const REST_REACH_BACK = 0.07
 /** How long the scroll must be still before it settles into a resting point. */
 const IDLE_MS = 180
 /** How long wheel input is fully absorbed on reaching a resting point – the glide in takes most of this. */
-const HOLD_MS = 950
+const HOLD_MS = 1140
 /** How long wheel input then takes to ease back to full strength. */
-const HOLD_RELEASE_MS = 550
+const HOLD_RELEASE_MS = 660
 /** A point just rested at won't hold again until the scroll has travelled this share of the viewport away. */
 const HOLD_REARM = 0.25
 /** Session key for the scroll position kept across a reload. */
@@ -76,14 +76,7 @@ export function scrollToTarget(target: number | Element) {
     return
   }
   const screens = Math.abs(y - window.scrollY) / window.innerHeight
-  lenis.scrollTo(y, { duration: Math.min(3.2, 1.2 + screens * 0.35), easing: easeInOutSine })
-}
-
-/** Freeze the page behind a modal. Scrollable areas inside it need `data-lenis-prevent`. */
-export function lockPageScroll(locked: boolean) {
-  if (!lenis) document.documentElement.style.overflow = locked ? 'hidden' : ''
-  else if (locked) lenis.stop()
-  else lenis.start()
+  lenis.scrollTo(y, { duration: Math.min(3.84, 1.44 + screens * 0.42), easing: easeInOutSine })
 }
 
 export function initSmoothScroll() {
@@ -113,8 +106,8 @@ export function initSmoothScroll() {
   }
 
   const instance = new Lenis({
-    lerp: 0.07, // softer than the 0.1 default: momentum lingers and decelerates gently
-    wheelMultiplier: 0.75, // each wheel notch / trackpad flick travels less
+    lerp: 0.056, // softer than the 0.1 default: momentum lingers and decelerates gently
+    wheelMultiplier: 0.6, // each wheel notch / trackpad flick travels less
     smoothWheel: true,
     virtualScroll: holdAtRestPoints,
   })
@@ -168,7 +161,7 @@ export function initSmoothScroll() {
     }
 
     if (best == null || bestDistance < 2) return
-    instance.scrollTo(best, { duration: 0.8 + (bestDistance / vh) * 2.4, easing: easeInOutSine })
+    instance.scrollTo(best, { duration: 0.96 + (bestDistance / vh) * 2.88, easing: easeInOutSine })
   }
 
   const unsubscribeRest = finePointer
