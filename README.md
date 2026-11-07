@@ -8,9 +8,9 @@ npm run dev      # http://localhost:5173
 npm run build    # production build in dist/
 ```
 
-- Contact details (WhatsApp number, email, prefilled messages): `src/config.ts`
+- Contact details (WhatsApp number, prefilled message): `src/config.ts`
 - Intro-call booking (call length, buffer, WhatsApp message): `BOOKING` in `src/config.ts`
-- Contact form and booking email (EmailJS keys and templates): `EMAILJS` in `src/config.ts`
+- Booking email (EmailJS keys and templates): `EMAILJS` in `src/config.ts`
 - May's schedule and bookings: admin panel at `/#admin`, stored in Supabase
 - Hero imagery: `src/App.tsx` (drop your own photo in `public/` and point `mediaSrc` at it, e.g. `/tree.jpg`)
 - Colour tokens and the `.glass` utility: `tailwind.config.js`

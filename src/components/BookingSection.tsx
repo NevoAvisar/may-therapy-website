@@ -4,6 +4,8 @@ import Field, { fieldClasses } from './Field'
 import MonthCalendar from './MonthCalendar'
 import Reveal from './Reveal'
 import WhatsAppIcon from './WhatsAppIcon'
+import WoodlandRoots from './WoodlandRoots'
+import WriteIn from './WriteIn'
 import { BOOKING, whatsappUrl } from '../config'
 import {
   bookingWhatsappUrl,
@@ -77,10 +79,14 @@ function CallInfo() {
   return (
     <div className="md:col-span-2 lg:col-span-1">
       <span className="glass-mist inline-block rounded-full px-4 py-1.5 text-sm text-stream-blue">שיחת היכרות</span>
-      <h2 id="booking-title" className="mt-4 font-serif text-3xl font-light text-forest-moss md:text-4xl">
-        בואו נמצא זמן
-      </h2>
-      <p className="mt-3 leading-relaxed text-forest-moss/75">בחרו מועד שנוח לכם, ואאשר אותו איתכם בוואטסאפ.</p>
+      <WriteIn
+        as="h2"
+        by="char"
+        id="booking-title"
+        text="בואו נמצא זמן"
+        className="mt-4 font-display text-3xl font-light text-forest-moss md:text-4xl"
+      />
+      <WriteIn delay={0.3} text="בחרו מועד שנוח לכם, ואאשר אותו איתכם בוואטסאפ." className="mt-3 leading-relaxed text-forest-moss/75" />
 
       <p className="mt-6 inline-flex items-center gap-2 rounded-full bg-stream-blue px-5 py-2 text-sm font-medium text-primary">
         <span className="tabular-nums">{BOOKING.callMinutes} דק׳</span> · ללא עלות
@@ -180,6 +186,7 @@ function PickStep({ schedule, onTaken, onHeld }: { schedule: Schedule; onTaken: 
 
       <button
         type="submit"
+        data-sun-beacon
         disabled={!slot || holding}
         className={cn(
           'mt-2 flex w-full items-center justify-center gap-2.5 rounded-full px-6 py-3.5 font-medium text-primary transition',
@@ -210,7 +217,7 @@ function CalendarStep({ slot, emailSent }: { slot: Slot; emailSent: Promise<bool
       <span className="grid h-12 w-12 place-items-center rounded-full bg-river-mist text-stream-blue">
         <CalendarCheck className="h-6 w-6" aria-hidden />
       </span>
-      <h2 id="booking-title" className="mt-4 font-serif text-3xl font-light text-forest-moss">
+      <h2 id="booking-title" className="mt-4 font-display text-3xl font-light text-forest-moss">
         {scheduleConfigured() ? 'המועד נשמר עבורכם' : 'כמעט סיימנו'}
       </h2>
       <p className="mt-2 text-forest-moss/75">
@@ -224,6 +231,7 @@ function CalendarStep({ slot, emailSent }: { slot: Slot; emailSent: Promise<bool
 
       <a
         href={bookingWhatsappUrl(slot)}
+        data-sun-beacon
         target="_blank"
         rel="noopener noreferrer"
         className="mt-5 flex w-full items-center justify-center gap-2.5 rounded-full bg-stream-blue px-6 py-3.5 font-medium text-primary shadow-bloom transition hover:bg-forest-moss"
@@ -270,25 +278,27 @@ export default function BookingSection() {
   }, [refresh])
 
   return (
-    <section id="booking" aria-labelledby="booking-title" className="relative isolate pb-8 pt-24 md:pt-32">
+    <section id="booking" aria-labelledby="booking-title" className="relative isolate overflow-x-clip bg-tint-river pb-56 pt-24 md:pb-80 md:pt-32">
+      <WoodlandRoots />
       <div aria-hidden className="absolute start-[12%] top-24 -z-10 h-80 w-80 rounded-full bg-river-mist blur-3xl" />
       <div aria-hidden className="absolute bottom-0 end-[10%] -z-10 h-72 w-72 rounded-full bg-sage-leaf/30 blur-3xl" />
 
       <div className="page-container">
         <Reveal>
-          <div className="glass rounded-[32px] !bg-primary/[0.55] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.55),0_30px_70px_-30px_rgba(62,84,69,0.4)] backdrop-blur-[16px] md:p-10">
+          <div className="glass rounded-[32px] !bg-primary/[0.82] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.55),0_30px_70px_-30px_rgba(27,19,13,0.55)] backdrop-blur-[16px] md:p-10">
             {held ? (
               <CalendarStep slot={held.slot} emailSent={held.emailSent} />
             ) : schedule ? (
               <PickStep schedule={schedule} onTaken={refresh} onHeld={(slot, emailSent) => setHeld({ slot, emailSent })} />
             ) : failed ? (
               <div className="py-10 text-center">
-                <h2 id="booking-title" className="font-serif text-3xl font-light text-forest-moss">
+                <h2 id="booking-title" className="font-display text-3xl font-light text-forest-moss">
                   היומן לא נטען כרגע
                 </h2>
                 <p className="mt-2 text-forest-moss/75">אפשר לכתוב לי ישירות בוואטסאפ ונמצא זמן יחד.</p>
                 <a
                   href={whatsappUrl}
+                  data-sun-beacon
                   target="_blank"
                   rel="noopener noreferrer"
                   className="mt-5 inline-flex items-center gap-2.5 rounded-full bg-stream-blue px-7 py-3.5 font-medium text-primary shadow-bloom transition hover:bg-forest-moss"

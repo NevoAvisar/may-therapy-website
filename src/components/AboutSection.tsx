@@ -1,5 +1,6 @@
 import { Leaf } from 'lucide-react'
 import Reveal from './Reveal'
+import WriteIn from './WriteIn'
 
 /* May's portrait – put a square photo in /public (e.g. may.jpg) and set '/may.jpg'. Empty shows the monogram. */
 const PORTRAIT_SRC = ''
@@ -8,9 +9,9 @@ const VALUES = ['הקשבה לפני הכול', 'בקצב שלך', 'מגע רק 
 
 export default function AboutSection() {
   return (
-    <section id="about" aria-labelledby="about-title" className="relative isolate py-24 md:py-32">
+    <section id="about" aria-labelledby="about-title" className="relative isolate bg-gradient-to-b from-tint-lavender from-60% to-tint-river py-24 md:py-32">
       <div aria-hidden className="absolute -top-10 end-[12%] -z-10 h-72 w-72 rounded-full bg-flower-bloom/35 blur-3xl" />
-      <div aria-hidden className="absolute bottom-0 start-[8%] -z-10 h-80 w-80 rounded-full bg-river-mist blur-3xl" />
+      <div aria-hidden className="absolute bottom-24 start-[8%] -z-10 h-80 w-80 rounded-full bg-river-mist blur-3xl" />
 
       <div className="page-container max-w-5xl">
         <Reveal>
@@ -32,7 +33,7 @@ export default function AboutSection() {
                 {PORTRAIT_SRC ? (
                   <img src={PORTRAIT_SRC} alt="מאי" className="h-full w-full object-cover" loading="lazy" decoding="async" />
                 ) : (
-                  <span className="grid h-full w-full place-items-center bg-gradient-to-br from-flower-bloom to-flower-center font-serif text-6xl text-forest-moss md:text-7xl">
+                  <span className="grid h-full w-full place-items-center bg-gradient-to-br from-flower-bloom to-flower-center font-display text-6xl text-forest-moss md:text-7xl">
                     מ
                   </span>
                 )}
@@ -43,18 +44,16 @@ export default function AboutSection() {
               <span className="glass-mist inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm text-stream-blue">
                 <Leaf className="h-4 w-4" aria-hidden /> עליי
               </span>
-              <h2 id="about-title" className="mt-4 font-serif text-4xl font-light text-forest-moss md:text-5xl">
-                נעים להכיר, אני מאי
-              </h2>
+              <WriteIn
+                as="h2"
+                by="char"
+                id="about-title"
+                text="נעים להכיר, אני מאי"
+                className="mt-4 font-display text-4xl font-light text-forest-moss md:text-5xl"
+              />
               <div className="mt-5 space-y-4 text-lg leading-relaxed text-forest-moss/80">
-                <p>
-                  הדרך שלי לטיפול התחילה כשהגוף שלי ביקש ממני לעצור ולהקשיב. גיליתי שכשנותנים לו מקום – הוא יודע לספר
-                  מה הוא צריך, הרבה לפני שהמילים מגיעות.
-                </p>
-                <p>
-                  היום אני מלווה אנשים לחזור לקרקע: דרך מגע קשוב, נשימה ומודעות גופנית עדינה. אני מאמינה שאין צורך
-                  להילחם במה שכבד, אלא לפנות לו מקום – בקצב שלך, בביטחון ובהקשבה מלאה.
-                </p>
+                <WriteIn delay={0.3} text="הדרך שלי לטיפול התחילה כשהגוף שלי ביקש ממני לעצור ולהקשיב. גיליתי שכשנותנים לו מקום – הוא יודע לספר מה הוא צריך, הרבה לפני שהמילים מגיעות." />
+                <WriteIn delay={0.6} text="היום אני מלווה אנשים לחזור לקרקע: דרך מגע קשוב, נשימה ומודעות גופנית עדינה. אני מאמינה שאין צורך להילחם במה שכבד, אלא לפנות לו מקום – בקצב שלך, בביטחון ובהקשבה מלאה." />
               </div>
 
               <ul className="mt-7 flex flex-wrap justify-center gap-2 md:justify-start" aria-label="הגישה שלי">
@@ -65,7 +64,7 @@ export default function AboutSection() {
                 ))}
               </ul>
 
-              <p className="mt-7 font-serif text-xl text-forest-moss">
+              <p className="mt-7 font-display text-xl text-forest-moss">
                 מאי <span className="text-base text-forest-moss/60">· מטפלת במגע ובאיזון גוף-נפש</span>
               </p>
             </div>

@@ -37,6 +37,33 @@
   }
 }
 
+/* Text flowing onto the page, right to left – staggered by WriteIn.tsx */
+.write-token {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(3px);
+  transform: translate3d(10px, 0, 0);
+  transition:
+    opacity 0.7s ease-out var(--delay),
+    filter 0.7s ease-out var(--delay),
+    transform 0.9s cubic-bezier(0.22, 0.61, 0.36, 1) var(--delay);
+}
+[data-written] .write-token {
+  opacity: 1;
+  filter: none;
+  transform: none;
+}
+
+/* The sun stands in for the pointer – text fields keep their caret. */
+html.sun-cursor,
+html.sun-cursor * {
+  cursor: none !important;
+}
+html.sun-cursor input,
+html.sun-cursor textarea {
+  cursor: text !important;
+}
+
 /* Lenis smooth scrolling */
 html.lenis,
 html.lenis body {

@@ -23,7 +23,7 @@ import {
 const WEEKDAY_NAMES = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת']
 
 const card = 'glass rounded-[28px] !bg-primary/[0.6] p-6 md:p-8'
-const heading = 'font-serif text-2xl font-light text-forest-moss'
+const heading = 'font-display text-2xl font-light text-forest-moss'
 const primaryButton = 'rounded-full bg-stream-blue px-6 py-3 font-medium text-primary transition hover:bg-forest-moss disabled:opacity-60'
 const quietButton = 'rounded-full bg-white/60 px-4 py-2 text-sm text-forest-moss ring-1 ring-stream-aqua/40 transition hover:bg-river-mist'
 
@@ -291,7 +291,7 @@ function Dashboard({ onSignOut }: { onSignOut: () => void }) {
   return (
     <>
       <header className="flex items-center justify-between gap-3">
-        <h1 className="font-serif text-3xl font-light">ניהול היומן</h1>
+        <h1 className="font-display text-3xl font-light">ניהול היומן</h1>
         <div className="flex items-center gap-2">
           <a href="#top" className={quietButton}>
             לאתר

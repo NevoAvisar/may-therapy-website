@@ -10,7 +10,7 @@ const ROOTS_SRCSET = `${ROOTS_PHOTO}&w=1200 1200w, ${ROOTS_PHOTO}&w=2400 2400w`
 const MELT =
   'linear-gradient(to bottom, transparent 0, rgba(0,0,0,0.05) 50px, rgba(0,0,0,0.15) 105px, rgba(0,0,0,0.5) 230px, rgba(0,0,0,0.85) 335px, #000 420px)'
 
-/** The forest the contact card sits inside, rising behind it and running under the footer to the page bottom. */
+/** The forest the booking card sits inside, rising behind it and running under the footer to the page bottom. */
 export default function WoodlandRoots() {
   const ref = useRef<HTMLDivElement>(null)
   const reduceMotion = useReducedMotion()

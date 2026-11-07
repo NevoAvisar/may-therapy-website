@@ -19,10 +19,16 @@ export default {
         'bark-toned': '#7F6A58', // warm bark accent
         'flower-bloom': '#E8C5C8', // soft pastel blossom pink
         'flower-center': '#F5E5C9', // warm petal core
+        // Section backgrounds, top to bottom of the page
+        'tint-mist': '#EBF3F0', // soft morning mist
+        'tint-petal': '#F7F2EB', // warm petal cream
+        'tint-sage': '#E8F0E8', // gentle sage
+        'tint-lavender': '#F0EBF4', // lavender mist
+        'tint-river': '#E6F0F2', // pale river aqua
       },
       fontFamily: {
-        sans: ['Rubik', 'Heebo', 'system-ui', '-apple-system', 'Segoe UI', 'Arial', 'sans-serif'],
-        serif: ['"Frank Ruhl Libre"', '"David Libre"', 'Georgia', 'serif'],
+        sans: ['"Varela Round"', 'Heebo', 'system-ui', '-apple-system', 'Segoe UI', 'Arial', 'sans-serif'],
+        display: ['Fredoka', '"Varela Round"', 'system-ui', 'sans-serif'],
       },
       backgroundImage: {
         grain,
@@ -40,10 +46,19 @@ export default {
           '0%, 100%': { transform: 'translate3d(0,0,0)' },
           '50%': { transform: 'translate3d(0,-10px,0)' },
         },
+        'sun-spin': {
+          to: { transform: 'rotate(360deg)' },
+        },
+        'sun-breathe': {
+          '0%, 100%': { transform: 'scale(1)' },
+          '50%': { transform: 'scale(1.12)' },
+        },
       },
       animation: {
         'soft-pulse': 'soft-pulse 2.6s cubic-bezier(0.22,0.61,0.36,1) infinite',
         drift: 'drift 7s ease-in-out infinite',
+        'sun-spin': 'sun-spin 26s linear infinite',
+        'sun-breathe': 'sun-breathe 4.5s ease-in-out infinite',
       },
     },
   },

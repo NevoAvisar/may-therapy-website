@@ -1,6 +1,7 @@
 import { useRef, type MouseEvent } from 'react'
 import { HandHeart, Wind, Feather, type LucideIcon } from 'lucide-react'
 import Reveal from './Reveal'
+import WriteIn from './WriteIn'
 import { cn } from '../lib/cn'
 
 interface Treatment {
@@ -80,7 +81,7 @@ function BentoCard({ t, large }: { t: Treatment; large?: boolean }) {
         <span className="grid h-12 w-12 place-items-center rounded-2xl bg-white/60 text-stream-blue ring-1 ring-stream-aqua/30">
           <t.Icon className="h-6 w-6" strokeWidth={1.5} aria-hidden />
         </span>
-        <span className="font-serif text-sm text-bark-toned/80" aria-hidden>
+        <span className="font-display text-sm text-bark-toned/80" aria-hidden>
           {t.num}
         </span>
         <span aria-hidden className="h-px flex-1 bg-gradient-to-l from-stream-aqua/50 to-transparent" />
@@ -94,8 +95,13 @@ function BentoCard({ t, large }: { t: Treatment; large?: boolean }) {
         ))}
       </ul>
 
-      <h3 className={cn('mt-5 font-serif font-medium text-forest-moss', large ? 'text-3xl md:text-4xl lg:text-[2.1rem]' : 'text-2xl')}>{t.title}</h3>
-      <p className={cn('mt-3 leading-relaxed text-forest-moss/80', large && 'md:text-lg')}>{t.body}</p>
+      <WriteIn
+        as="h3"
+        by="char"
+        text={t.title}
+        className={cn('mt-5 font-display font-medium text-forest-moss', large ? 'text-3xl md:text-4xl lg:text-[2.1rem]' : 'text-2xl')}
+      />
+      <WriteIn delay={0.3} text={t.body} className={cn('mt-3 leading-relaxed text-forest-moss/80', large && 'md:text-lg')} />
 
       <p className="mt-auto pt-6 text-sm text-forest-moss/70">
         <span className="font-medium text-bark-toned">מתאים ל: </span>
@@ -113,22 +119,28 @@ export default function TreatmentsSection() {
     <section
       id="treatments"
       aria-labelledby="treatments-title"
-      className="relative flex flex-col justify-center py-24 md:py-32 lg:min-h-[100svh] lg:scroll-mt-0 lg:pb-12 lg:pt-28"
+      className="relative isolate flex flex-col justify-center bg-gradient-to-b from-tint-petal from-60% to-tint-sage py-24 md:py-32 lg:min-h-[100svh] lg:scroll-mt-0 lg:pb-12 lg:pt-28"
     >
       <div aria-hidden className="absolute -top-20 start-[10%] -z-10 h-72 w-72 rounded-full bg-river-mist blur-3xl" />
-      <div aria-hidden className="absolute bottom-10 end-[15%] -z-10 h-64 w-64 rounded-full bg-flower-bloom/40 blur-3xl" />
+      <div aria-hidden className="absolute bottom-24 end-[15%] -z-10 h-64 w-64 rounded-full bg-flower-bloom/40 blur-3xl" />
 
       <div className="page-container">
         <Reveal className="max-w-2xl lg:flex lg:max-w-none lg:items-end lg:justify-between lg:gap-12">
           <div>
             <span className="glass-mist inline-block rounded-full px-4 py-1.5 text-sm text-stream-blue">הטיפולים</span>
-            <h2 id="treatments-title" className="mt-4 font-serif text-4xl font-light text-forest-moss md:text-5xl">
-              שלוש דרכים לחזור לעצמך
-            </h2>
+            <WriteIn
+              as="h2"
+              by="char"
+              id="treatments-title"
+              text="שלוש דרכים לחזור לעצמך"
+              className="mt-4 font-display text-4xl font-light text-forest-moss md:text-5xl"
+            />
           </div>
-          <p className="mt-4 text-lg leading-relaxed text-forest-moss/75 lg:mt-0 lg:max-w-md">
-            כל מפגש נבנה סביב מה שנכון לך עכשיו – לפעמים מגע, לפעמים נשימה, ולפעמים פשוט שקט.
-          </p>
+          <WriteIn
+            delay={0.3}
+            text="כל מפגש נבנה סביב מה שנכון לך עכשיו – לפעמים מגע, לפעמים נשימה, ולפעמים פשוט שקט."
+            className="mt-4 text-lg leading-relaxed text-forest-moss/75 lg:mt-0 lg:max-w-md"
+          />
         </Reveal>
 
         <div className="mt-12 grid gap-5 md:grid-cols-2 md:grid-rows-2 lg:mt-10 lg:grid-cols-[1.3fr_1fr_1fr] lg:grid-rows-1">

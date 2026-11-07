@@ -2,6 +2,7 @@ import { useId, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Plus } from 'lucide-react'
 import Reveal from './Reveal'
+import WriteIn from './WriteIn'
 import { cn } from '../lib/cn'
 
 const FAQS = [
@@ -76,15 +77,19 @@ export default function FaqSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0)
 
   return (
-    <section id="faq" aria-labelledby="faq-title" className="relative py-24 md:py-32">
+    <section id="faq" aria-labelledby="faq-title" className="relative isolate bg-gradient-to-b from-tint-sage from-60% to-tint-lavender py-24 md:py-32">
       <div aria-hidden className="absolute inset-x-0 top-1/3 -z-10 mx-auto h-80 max-w-3xl rounded-full bg-river-mist/70 blur-3xl" />
       <div className="page-container max-w-4xl">
         <Reveal className="text-center">
           <span className="glass-mist inline-block rounded-full px-4 py-1.5 text-sm text-stream-blue">שאלות נפוצות</span>
-          <h2 id="faq-title" className="mt-4 font-serif text-4xl font-light text-forest-moss md:text-5xl">
-            לפני שנפגשים
-          </h2>
-          <p className="mt-4 text-lg text-forest-moss/75">כמה דברים שכדאי לדעת – ואם נשארה שאלה, אני כאן.</p>
+          <WriteIn
+            as="h2"
+            by="char"
+            id="faq-title"
+            text="לפני שנפגשים"
+            className="mt-4 font-display text-4xl font-light text-forest-moss md:text-5xl"
+          />
+          <WriteIn delay={0.3} text="כמה דברים שכדאי לדעת – ואם נשארה שאלה, אני כאן." className="mt-4 text-lg text-forest-moss/75" />
         </Reveal>
 
         <div className="mt-12 flex flex-col gap-3">

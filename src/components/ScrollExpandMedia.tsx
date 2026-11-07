@@ -5,7 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ChevronDown } from 'lucide-react'
 import { HERO_EXPAND_EVENT } from '../config'
 import { cn } from '../lib/cn'
-import { addRestPoint, scrollToTarget } from '../lib/smoothScroll'
+import { scrollToTarget } from '../lib/smoothScroll'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -15,7 +15,7 @@ gsap.registerPlugin(ScrollTrigger)
  *
  * The hero is pinned by GSAP ScrollTrigger and native page scroll scrubs `--p` from 0 → 1:
  * the framed media grows to exactly 100vw × 100dvh while the title drifts apart and fades.
- * After a short hold at full bleed the pin releases and the page simply keeps scrolling –
+ * At full bleed the pin releases and the page simply keeps scrolling –
  * no wheel hijacking, so inertia, scrollbars, keyboard and touch all behave natively.
  */
 interface ScrollExpandMediaProps {
@@ -35,9 +35,9 @@ interface ScrollExpandMediaProps {
 }
 
 /** Scroll distance of the pin, in % of the viewport height. */
-const PIN_LENGTH = '+=170%'
-/** Share of the pin spent resting at full bleed before the page takes over. */
-const HOLD = 0.2
+const PIN_LENGTH = '+=100%'
+/** Share of the pin spent at full bleed before the page takes over, so it never releases mid-expansion. */
+const HOLD = 0.1
 
 /** Edge feather of the compact media: two gradients intersected, so all four sides fade. */
 const FEATHER_X =
@@ -47,9 +47,9 @@ const FEATHER_Y =
 
 /** Dissolves the media's bottom edge; `--mist` (0 → 1 over the end of the scrub) grows it to 25%. */
 const MIST_MASK = 'linear-gradient(to bottom, #000 calc(100% - 25% * var(--mist)), transparent 100%)'
-/** Into the exact page background, so nothing marks where the hero ends and the next section begins. */
+/** Into the exact background of the first section, so nothing marks where the hero ends and the next section begins. */
 const MIST_FADE =
-  'linear-gradient(to bottom, rgba(246, 244, 240, 0) 0%, rgba(220, 232, 227, 0.25) 35%, rgba(246, 244, 240, 0.75) 70%, #F6F4F0 100%)'
+  'linear-gradient(to bottom, rgba(235, 243, 240, 0) 0%, rgba(220, 232, 227, 0.25) 35%, rgba(235, 243, 240, 0.75) 70%, #EBF3F0 100%)'
 
 /** Scroll position at which the media first fills the viewport (before the hold). */
 const fullBleedAt = (st: ScrollTrigger | null) => (st ? st.start + (st.end - st.start) / (1 + HOLD) : null)
@@ -168,7 +168,7 @@ export default function ScrollExpandMedia({
           start: 'top top',
           end: PIN_LENGTH,
           pin: true,
-          scrub: 1.92, // the media follows the scroll with a slow, breathing lag
+          scrub: 0.35, // just enough lag to smooth the media, without it trailing the scroll
           anticipatePin: 1,
           invalidateOnRefresh: true,
           onRefresh: syncExpanded,
@@ -195,14 +195,7 @@ export default function ScrollExpandMedia({
     syncExpanded()
     window.addEventListener('scroll', syncExpanded, { passive: true })
 
-    // Two resting points: the compact opening frame, and the moment the media fills the screen.
-    const removeRests = [
-      addRestPoint(() => triggerRef.current?.start ?? null),
-      addRestPoint(() => fullBleedAt(triggerRef.current)),
-    ]
-
     return () => {
-      removeRests.forEach((remove) => remove())
       window.removeEventListener('scroll', syncExpanded)
       triggerRef.current = null
       ctx.revert()
@@ -270,6 +263,7 @@ export default function ScrollExpandMedia({
       <div>
         <section
           ref={sectionRef}
+          id="hero"
           aria-label="פתיחה"
           className="relative flex h-[100dvh] items-center justify-center overflow-hidden bg-forest-moss"
           style={
@@ -286,11 +280,11 @@ export default function ScrollExpandMedia({
             <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-river-mist/25 to-transparent" />
           </div>
 
-          {/* Cream beneath the media, so its dissolving edge melts into the page rather than the moss backdrop */}
+          {/* Mist beneath the media, so its dissolving edge melts into the page rather than the moss backdrop */}
           <div
             aria-hidden
             className="pointer-events-none absolute inset-x-0 bottom-0 h-[32dvh]"
-            style={{ opacity: 'var(--mist)', background: 'linear-gradient(to bottom, transparent, #F6F4F0 60%)' }}
+            style={{ opacity: 'var(--mist)', background: 'linear-gradient(to bottom, transparent, #EBF3F0 60%)' }}
           />
 
           {/* Floating framed media */}
@@ -333,7 +327,7 @@ export default function ScrollExpandMedia({
                   className="absolute inset-0 flex items-center justify-center px-6"
                   initial={false}
                   animate={mediaFullyExpanded ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
-                  transition={{ duration: 0.8, ease: [0.22, 0.61, 0.36, 1] }}
+                  transition={{ duration: 0.5, ease: [0.22, 0.61, 0.36, 1] }}
                   style={{ pointerEvents: mediaFullyExpanded ? 'auto' : 'none' }}
                   aria-hidden={!mediaFullyExpanded}
                 >
@@ -354,7 +348,7 @@ export default function ScrollExpandMedia({
           <h1
             aria-label={title}
             className={cn(
-              'pointer-events-none absolute inset-0 z-20 flex flex-col items-center justify-center gap-1 text-center font-serif font-light leading-[1.05] text-primary',
+              'pointer-events-none absolute inset-0 z-20 flex flex-col items-center justify-center gap-1 text-center font-display font-light leading-[1.05] text-primary',
               textBlend && 'mix-blend-difference',
             )}
             style={{ textShadow: '0 2px 30px rgba(30,44,36,0.45)' }}
