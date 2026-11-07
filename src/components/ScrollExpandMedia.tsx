@@ -38,7 +38,7 @@ interface ScrollExpandMediaProps {
 // Hero timing and masks | תזמון ומסכות של אזור הפתיחה
 // ==========================================
 /** Scroll distance of the pin, in % of the viewport height. */
-const PIN_LENGTH = '+=100%'
+const PIN_LENGTH = '+=120%'
 /** Share of the pin spent at full bleed before the page takes over, so it never releases mid-expansion. */
 const HOLD = 0.1
 
@@ -177,7 +177,7 @@ export default function ScrollExpandMedia({
           start: 'top top',
           end: PIN_LENGTH,
           pin: true,
-          scrub: 0.35, // just enough lag to smooth the media, without it trailing the scroll
+          scrub: 0.6, // just enough lag to smooth the media, without it trailing the scroll
           anticipatePin: 1,
           invalidateOnRefresh: true,
           onRefresh: syncExpanded,

@@ -24,8 +24,8 @@ gsap.registerPlugin(ScrollTrigger)
  * - למשתמשים שביקשו להפחית תנועה יש גלילה רגילה, בלי עצירות.
  */
 
-/** Pause length from arrival, in ms; the glide in takes about 0.5s of it | משך העצירה מרגע ההגעה, כולל כחצי שנייה של גלישה */
-const PAUSE_MS = 2000
+/** Pause length from arrival, in ms; the glide in takes about 0.8s of it | משך העצירה מרגע ההגעה, כולל כ-0.8 שנייה של גלישה */
+const PAUSE_MS = 2300
 /** How long wheel input takes to return to full strength after a pause | הזמן שבו הגלילה חוזרת בהדרגה לעוצמה מלאה */
 const RELEASE_MS = 300
 /** Reach of the settle, as a share of the viewport height, ahead of the scroll and behind it | טווח ההתיישבות כחלק מגובה המסך, קדימה ואחורה */
@@ -35,6 +35,10 @@ const SETTLE_REACH_BACK = 0.07
 const IDLE_MS = 180
 /** A section just paused at stays quiet until the scroll is this share of the viewport away | אזור שעצרנו בו לא יעצור שוב עד שהתרחקנו כחלק זה מהמסך */
 const REARM = 0.25
+/** Softness of the glide: lower is calmer | רכות הגלישה: ערך נמוך יותר רגוע יותר */
+const LERP = 0.08
+/** Distance per wheel notch or trackpad swipe, against the default of 1 | המרחק לכל תנועת גלגלת או משטח מגע, ביחס לברירת המחדל 1 */
+const WHEEL_MULTIPLIER = 0.8
 /** Session key for the scroll position kept across a reload | מפתח לשמירת מיקום הגלילה בין רענונים */
 const SCROLL_MEMORY_KEY = 'scroll-y'
 
@@ -54,7 +58,7 @@ export function scrollToTarget(target: number | Element) {
     return
   }
   const screens = Math.abs(y - window.scrollY) / window.innerHeight
-  lenis.scrollTo(y, { duration: Math.min(2.2, 0.8 + screens * 0.22), easing: easeInOutSine })
+  lenis.scrollTo(y, { duration: Math.min(2.6, 0.95 + screens * 0.26), easing: easeInOutSine })
 }
 
 /** Starts Lenis and the pause at each of `pauseAt` (section ids). Returns a cleanup | מפעיל את Lenis ואת העצירה באזורים שהועברו, ומחזיר פונקציית ניקוי */
@@ -119,7 +123,7 @@ export function initSmoothScroll(pauseAt: string[]) {
     return true
   }
 
-  const instance = new Lenis({ lerp: 0.12, smoothWheel: true, virtualScroll: pauseWheel })
+  const instance = new Lenis({ lerp: LERP, wheelMultiplier: WHEEL_MULTIPLIER, smoothWheel: true, virtualScroll: pauseWheel })
   lenis = instance
 
   // ------------------------------------------
@@ -182,7 +186,7 @@ export function initSmoothScroll(pauseAt: string[]) {
 
     if (best == null || bestDistance < 2) return
     beginPause(best, direction)
-    instance.scrollTo(best, { duration: 0.5 + (bestDistance / vh) * 1.5, easing: easeInOutSine })
+    instance.scrollTo(best, { duration: 0.6 + (bestDistance / vh) * 1.8, easing: easeInOutSine })
   }
 
   const onScroll = () => {
