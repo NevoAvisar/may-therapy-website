@@ -11,6 +11,9 @@ interface WriteInProps {
   delay?: number
 }
 
+// ==========================================
+// Text reveal | אנימציית כתיבה של טקסט
+// ==========================================
 /** Gap between tokens, in seconds – shortened on long text so it never takes more than `MAX_SPREAD` to start the last one. */
 const STAGGER = { char: 0.03, word: 0.045 }
 const MAX_SPREAD = 1
@@ -19,6 +22,9 @@ const MAX_SPREAD = 1
  * Text that flows onto the page as it enters the viewport, right to left like handwriting, and then stays.
  * Each token is a CSS transition (see `.write-token`), so nothing renders per frame. Screen readers get the
  * plain sentence.
+ *
+ * הטקסט זורם אל הדף כשהוא נכנס למסך, מימין לשמאל כמו כתב יד, ואז נשאר במקומו. כל מילה או אות היא מעבר CSS
+ * (ראו `.write-token`), כך שאין רינדור בכל פריים. קוראי מסך מקבלים את המשפט הרגיל.
  */
 export default function WriteIn({ text, as: Tag = 'p', by = 'word', id, className, delay = 0 }: WriteInProps) {
   const ref = useRef<HTMLSpanElement>(null)

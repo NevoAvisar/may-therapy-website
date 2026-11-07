@@ -1,3 +1,4 @@
+// WhatsApp icon | אייקון וואטסאפ
 /** Lucide ships no brand marks, so the WhatsApp glyph lives here. */
 export default function WhatsAppIcon({ className }: { className?: string }) {
   return (

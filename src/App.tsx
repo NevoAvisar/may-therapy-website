@@ -13,6 +13,9 @@ import WriteIn from './components/WriteIn'
 import { goToSection } from './config'
 import { initSmoothScroll } from './lib/smoothScroll'
 
+// ==========================================
+// Page content settings | הגדרות תוכן הדף
+// ==========================================
 /* Hero imagery – swap for your own (e.g. put tree.jpg in /public and use '/tree.jpg'). */
 const HERO = {
   bgImageSrc: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=2000&q=75',
@@ -23,6 +26,12 @@ const HERO = {
 // Reaching each of these sprouts a flower on the spine.
 const BLOOM_AT = ['intro', 'treatments', 'care-touch', 'care-breath', 'care-rest', 'faq', 'about']
 
+// The page settles and pauses on arriving at each of these | הדף מתיישב ועוצר בהגעה לכל אחד מהאזורים האלה
+const PAUSE_AT = ['intro', 'treatments', 'faq', 'about', 'booking']
+
+// ==========================================
+// Hero caption | כיתוב על גבי תמונת הפתיחה
+// ==========================================
 function ExpandedCaption() {
   return (
     <div className="glass flex max-w-xl flex-col items-center gap-5 rounded-[32px] !bg-primary/55 px-8 py-9 text-center">
@@ -54,13 +63,16 @@ function ExpandedCaption() {
   )
 }
 
+// ==========================================
+// Section 1: The Space | אזור המרחב - ממורכז למסך המשתמש
+// ==========================================
 function IntroSection() {
   return (
     // A full breath between the hero and the treatments: centred, unhurried, with a soft mist glow behind.
     <section
       id="intro"
       aria-labelledby="intro-title"
-      className="relative isolate flex min-h-[75svh] items-center bg-gradient-to-b from-tint-mist from-60% to-tint-petal py-24 md:min-h-[85svh]"
+      className="relative isolate flex min-h-[100svh] items-center bg-gradient-to-b from-tint-mist from-60% to-tint-petal py-24"
     >
       {/* Mist carried over from the hero, so the content rises out of it */}
       <div aria-hidden className="absolute inset-x-0 top-0 -z-10 h-48 bg-gradient-to-b from-tint-mist via-river-mist/40 to-transparent" />
@@ -86,10 +98,13 @@ function IntroSection() {
   )
 }
 
+// ==========================================
+// Page layout | מבנה הדף
+// ==========================================
 export default function App() {
   const [heroExpanded, setHeroExpanded] = useState(false)
 
-  useEffect(() => initSmoothScroll(), [])
+  useEffect(() => initSmoothScroll(PAUSE_AT), [])
 
   return (
     <div dir="rtl" id="top" className="relative min-h-screen bg-primary text-forest-moss">
@@ -105,8 +120,9 @@ export default function App() {
       </a>
 
       <Navbar />
-      <TreeSpine bloomAt={BLOOM_AT} rootsAt="booking" visible={heroExpanded} />
+      <TreeSpine bloomAt={BLOOM_AT} rootsAt="site-footer" visible={heroExpanded} />
 
+      {/* Hero, then every section in order | פתיחה ואחריה כל האזורים לפי הסדר */}
       <ScrollExpandMedia
         {...HERO}
         title="מקום לעצור, לנשום ולהתחבר מחדש"
@@ -123,8 +139,9 @@ export default function App() {
           <BookingSection />
         </main>
 
+        {/* Footer | כותרת תחתונה */}
         {/* Sits over the bottom of the forest photo; its height is matched in WoodlandRoots */}
-        <footer className="relative flex h-28 items-center sm:h-20">
+        <footer id="site-footer" className="relative flex h-28 items-center sm:h-20">
           <div className="page-container flex w-full flex-col items-center justify-between gap-1.5 text-sm sm:pe-24 text-primary [text-shadow:0_1px_3px_rgba(0,0,0,0.6)] sm:flex-row">
             <p className="rounded-full bg-black/25 px-4 py-1 backdrop-blur-sm">© 2026 MKRA Technology. כל הזכויות שמורות.</p>
             <p className="rounded-full bg-black/25 px-4 py-1 backdrop-blur-sm">נבנה באהבה ובנשימה עמוקה 🌿</p>

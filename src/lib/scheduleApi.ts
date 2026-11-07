@@ -2,6 +2,9 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 import { BOOKING, SUPABASE } from '../config'
 import type { Override, Schedule, Slot, TimeWindow } from './booking'
 
+// ==========================================
+// Supabase access for the schedule | גישה ל-Supabase עבור היומן
+// ==========================================
 export type Contact = { name: string; phone: string; email: string }
 export type Booking = Contact & { id: string; start_at: string }
 
@@ -15,6 +18,7 @@ function unwrap<T>({ data, error }: { data: T | null; error: { message: string }
   return data as T
 }
 
+// Public site | האתר הציבורי
 export async function loadSchedule(): Promise<Schedule> {
   if (!scheduleConfigured()) {
     return { workDays: BOOKING.defaultWorkDays, windows: BOOKING.defaultWindows, overrides: [], busy: [] }
@@ -49,6 +53,7 @@ export async function holdSlot({ date, time }: Slot, contact: Contact) {
   return unwrap(held) as boolean
 }
 
+// May's admin panel | פאנל הניהול של מאי
 export async function isAdminSession() {
   const { data } = await db().auth.getSession()
   if (!data.session) return false

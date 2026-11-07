@@ -10,6 +10,9 @@ import { useEffect, useRef, type CSSProperties } from 'react'
  * still for a moment. Mouse only: touch has no cursor to follow, and reduced-motion users keep the plain page.
  */
 
+// ==========================================
+// Light settings | הגדרות האור
+// ==========================================
 /** How far from a CTA's edge the light starts to answer, in px. */
 const BEACON_REACH = 280
 /** Follow / bloom speed: higher is snappier. Per-second, so it feels the same at any refresh rate. */
@@ -47,6 +50,7 @@ const layerStyle = (size: number, background: string): CSSProperties => ({
   willChange: 'transform, opacity',
 })
 
+// Distance to the nearest beacon | המרחק לכפתור הקרוב
 /** 0 far from every visible beacon, 1 touching one. */
 function beaconProximity(x: number, y: number) {
   let nearest = 0
@@ -62,6 +66,9 @@ function beaconProximity(x: number, y: number) {
   return nearest * nearest * (3 - 2 * nearest)
 }
 
+// ==========================================
+// The sun icon | אייקון השמש
+// ==========================================
 function SunIcon() {
   return (
     <div className="h-full w-full animate-sun-breathe">
@@ -77,6 +84,9 @@ function SunIcon() {
   )
 }
 
+// ==========================================
+// Sun cursor, mouse only - never runs on touch screens | סמן השמש, לעכבר בלבד - לא פועל במסכי מגע
+// ==========================================
 export default function SunCursor() {
   const sunRef = useRef<HTMLDivElement>(null)
   const lightRef = useRef<HTMLDivElement>(null)
@@ -160,13 +170,20 @@ export default function SunCursor() {
       root.classList.remove(ACTIVE_CLASS)
     }
 
+    // A laptop with a touchscreen: a tap must not leave the sun stranded | מחשב עם מסך מגע: נגיעה לא תשאיר את השמש תקועה
+    const onTouch = (e: PointerEvent) => {
+      if (e.pointerType !== 'mouse') onLeave()
+    }
+
     window.addEventListener('pointermove', onMove, { passive: true })
+    window.addEventListener('pointerdown', onTouch, { passive: true })
     window.addEventListener('scroll', wake, { passive: true })
     root.addEventListener('mouseleave', onLeave)
 
     return () => {
       cancelAnimationFrame(frame)
       window.removeEventListener('pointermove', onMove)
+      window.removeEventListener('pointerdown', onTouch)
       window.removeEventListener('scroll', wake)
       root.removeEventListener('mouseleave', onLeave)
       root.classList.remove(ACTIVE_CLASS)

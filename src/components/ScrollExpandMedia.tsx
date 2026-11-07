@@ -34,6 +34,9 @@ interface ScrollExpandMediaProps {
   children?: ReactNode
 }
 
+// ==========================================
+// Hero timing and masks | תזמון ומסכות של אזור הפתיחה
+// ==========================================
 /** Scroll distance of the pin, in % of the viewport height. */
 const PIN_LENGTH = '+=100%'
 /** Share of the pin spent at full bleed before the page takes over, so it never releases mid-expansion. */
@@ -54,6 +57,9 @@ const MIST_FADE =
 /** Scroll position at which the media first fills the viewport (before the hold). */
 const fullBleedAt = (st: ScrollTrigger | null) => (st ? st.start + (st.end - st.start) / (1 + HOLD) : null)
 
+// ==========================================
+// Vapour title | כותרת שמתאדה אות אחר אות
+// ==========================================
 /** Deterministic 0–1 noise, so every render (and reload) scatters the letters the same way. */
 const noise = (n: number) => {
   const x = Math.sin(n * 127.1 + 311.7) * 43758.5453
@@ -118,6 +124,9 @@ function VapourLine({ text, seed, className }: { text: string; seed: number; cla
   )
 }
 
+// ==========================================
+// Hero section | אזור הפתיחה - התמונה מתרחבת עם הגלילה
+// ==========================================
 export default function ScrollExpandMedia({
   mediaType = 'image',
   mediaSrc,

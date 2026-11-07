@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import WhatsAppIcon from './WhatsAppIcon'
 import { whatsappUrl } from '../config'
 
+// Floating WhatsApp button | כפתור וואטסאפ צף
 /** Bottom-left in RTL, away from the TreeSpine on the right. */
 export default function FloatingWhatsApp({ visible = true }: { visible?: boolean }) {
   return (

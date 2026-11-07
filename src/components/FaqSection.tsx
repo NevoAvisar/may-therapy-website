@@ -5,6 +5,9 @@ import Reveal from './Reveal'
 import WriteIn from './WriteIn'
 import { cn } from '../lib/cn'
 
+// ==========================================
+// Questions and answers | שאלות ותשובות
+// ==========================================
 const FAQS = [
   {
     q: 'איך מתנהל המפגש הראשון?',
@@ -28,6 +31,9 @@ const FAQS = [
   },
 ]
 
+// ==========================================
+// Single question | שאלה בודדת (נפתחת ונסגרת)
+// ==========================================
 function FaqItem({ q, a, open, onToggle }: { q: string; a: string; open: boolean; onToggle: () => void }) {
   const id = useId()
   return (
@@ -39,7 +45,7 @@ function FaqItem({ q, a, open, onToggle }: { q: string; a: string; open: boolean
           aria-expanded={open}
           aria-controls={`${id}-a`}
           onClick={onToggle}
-          className="flex w-full items-center justify-between gap-4 px-6 py-5 text-start text-lg font-medium text-forest-moss md:px-8"
+          className="flex w-full items-center justify-between gap-4 px-6 py-3.5 text-start text-lg font-medium text-forest-moss md:px-8"
         >
           <span>{q}</span>
           <motion.span
@@ -65,7 +71,7 @@ function FaqItem({ q, a, open, onToggle }: { q: string; a: string; open: boolean
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.4, ease: [0.22, 0.61, 0.36, 1] }}
           >
-            <p className="px-6 pb-6 leading-relaxed text-forest-moss/80 md:px-8">{a}</p>
+            <p className="px-6 pb-5 leading-relaxed text-forest-moss/80 md:px-8">{a}</p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -73,26 +79,31 @@ function FaqItem({ q, a, open, onToggle }: { q: string; a: string; open: boolean
   )
 }
 
+// ==========================================
+// Section 3: FAQ | אזור השאלות הנפוצות - מעט מעל מרכז המסך
+// ==========================================
 export default function FaqSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0)
 
   return (
-    <section id="faq" aria-labelledby="faq-title" className="relative isolate bg-gradient-to-b from-tint-sage from-60% to-tint-lavender py-24 md:py-32">
+    // More padding below than above lifts it just over dead-centre, and the bottom stays on screen.
+    // יותר רווח למטה מאשר למעלה מרים את התוכן מעט מעל המרכז, והחלק התחתון נשאר בתוך המסך.
+    <section id="faq" aria-labelledby="faq-title" className="relative isolate flex min-h-[100svh] flex-col justify-center bg-gradient-to-b from-tint-sage from-60% to-tint-lavender pb-24 pt-[4.5rem]">
       <div aria-hidden className="absolute inset-x-0 top-1/3 -z-10 mx-auto h-80 max-w-3xl rounded-full bg-river-mist/70 blur-3xl" />
       <div className="page-container max-w-4xl">
         <Reveal className="text-center">
-          <span className="glass-mist inline-block rounded-full px-4 py-1.5 text-sm text-stream-blue">שאלות נפוצות</span>
+          <span className="glass-mist inline-block rounded-full px-4 py-1 text-sm text-stream-blue">שאלות נפוצות</span>
           <WriteIn
             as="h2"
             by="char"
             id="faq-title"
             text="לפני שנפגשים"
-            className="mt-4 font-display text-4xl font-light text-forest-moss md:text-5xl"
+            className="mt-2 font-display text-4xl font-light text-forest-moss md:text-5xl"
           />
-          <WriteIn delay={0.3} text="כמה דברים שכדאי לדעת – ואם נשארה שאלה, אני כאן." className="mt-4 text-lg text-forest-moss/75" />
+          <WriteIn delay={0.3} text="כמה דברים שכדאי לדעת – ואם נשארה שאלה, אני כאן." className="mt-2 text-lg text-forest-moss/75" />
         </Reveal>
 
-        <div className="mt-12 flex flex-col gap-3">
+        <div className="mt-7 flex flex-col gap-2.5">
           {FAQS.map((item, i) => (
             <Reveal key={item.q} delay={i * 0.05}>
               <FaqItem {...item} open={openIndex === i} onToggle={() => setOpenIndex(openIndex === i ? null : i)} />

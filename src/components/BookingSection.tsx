@@ -23,6 +23,9 @@ import { cn } from '../lib/cn'
 import { emailConfigured, sendInquiry } from '../lib/email'
 import { holdSlot, loadSchedule, scheduleConfigured } from '../lib/scheduleApi'
 
+// ==========================================
+// Booking helpers | רכיבי עזר לתיאום
+// ==========================================
 /** Times before this sit under "morning", the rest under "evening". */
 const EVENING_FROM = '14:00'
 
@@ -33,7 +36,7 @@ function ChoiceChip({ selected, onClick, children }: { selected: boolean; onClic
       aria-pressed={selected}
       onClick={onClick}
       className={cn(
-        'rounded-full py-2 text-sm tabular-nums ring-1 transition',
+        'rounded-full py-2.5 text-sm tabular-nums ring-1 transition',
         selected
           ? 'bg-stream-blue font-medium text-primary ring-stream-blue'
           : 'bg-primary/70 text-forest-moss ring-stream-aqua/40 hover:bg-river-mist',
@@ -97,6 +100,9 @@ function CallInfo() {
   )
 }
 
+// ==========================================
+// Step 1: pick a date and time | שלב 1: בחירת תאריך ושעה
+// ==========================================
 function PickStep({ schedule, onTaken, onHeld }: { schedule: Schedule; onTaken: () => void; onHeld: (slot: Slot, emailSent: Promise<boolean>) => void }) {
   const [now] = useState(() => new Date())
   const [date, setDate] = useState<string | null>(null)
@@ -200,6 +206,9 @@ function PickStep({ schedule, onTaken, onHeld }: { schedule: Schedule; onTaken: 
   )
 }
 
+// ==========================================
+// Step 2: confirm and save to a calendar | שלב 2: אישור ושמירה ביומן
+// ==========================================
 function CalendarStep({ slot, emailSent }: { slot: Slot; emailSent: Promise<boolean> }) {
   const [emailConfirmed, setEmailConfirmed] = useState(false)
   const calendarButton = 'glass flex items-center justify-center gap-2.5 rounded-full px-5 py-3 text-sm font-medium text-forest-moss transition hover:!bg-white/70'
@@ -255,6 +264,9 @@ function CalendarStep({ slot, emailSent }: { slot: Slot; emailSent: Promise<bool
   )
 }
 
+// ==========================================
+// Section 5: Book a Call | אזור בואו נמצא זמן - היומן והיער בתחתית הדף
+// ==========================================
 export default function BookingSection() {
   const [schedule, setSchedule] = useState<Schedule | null>(null)
   const [failed, setFailed] = useState(false)
@@ -278,14 +290,15 @@ export default function BookingSection() {
   }, [refresh])
 
   return (
-    <section id="booking" aria-labelledby="booking-title" className="relative isolate overflow-x-clip bg-tint-river pb-56 pt-24 md:pb-80 md:pt-32">
+    <section id="booking" aria-labelledby="booking-title" className="relative isolate overflow-x-clip bg-tint-river pb-56 pt-24 md:pb-80">
+      {/* The roots photo rises behind the card and runs under the footer | תמונת השורשים עולה מאחורי הכרטיס וממשיכה מתחת לכותרת התחתונה */}
       <WoodlandRoots />
       <div aria-hidden className="absolute start-[12%] top-24 -z-10 h-80 w-80 rounded-full bg-river-mist blur-3xl" />
       <div aria-hidden className="absolute bottom-0 end-[10%] -z-10 h-72 w-72 rounded-full bg-sage-leaf/30 blur-3xl" />
 
       <div className="page-container">
         <Reveal>
-          <div className="glass rounded-[32px] !bg-primary/[0.82] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.55),0_30px_70px_-30px_rgba(27,19,13,0.55)] backdrop-blur-[16px] md:p-10">
+          <div className="glass rounded-[32px] !bg-primary/[0.82] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.55),0_30px_70px_-30px_rgba(27,19,13,0.55)] backdrop-blur-[16px] sm:p-6 md:p-10">
             {held ? (
               <CalendarStep slot={held.slot} emailSent={held.emailSent} />
             ) : schedule ? (

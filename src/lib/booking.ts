@@ -5,6 +5,9 @@ import { BOOKING, whatsappLink } from '../config'
  * meaning Israel wall-clock time, so a client's own time zone can never shift a slot to another day.
  */
 
+// ==========================================
+// Booking logic: types | לוגיקת התיאום: טיפוסים
+// ==========================================
 export type Slot = { date: string; time: string; minutes: number }
 export type TimeWindow = { start: string; end: string }
 /** An exception to the regular week. An empty time means the whole day. */
@@ -26,6 +29,9 @@ const clinicClock = new Intl.DateTimeFormat('en-CA', {
   second: '2-digit',
 })
 
+// ==========================================
+// Clinic time and dates | זמן ותאריכים לפי שעון הקליניקה
+// ==========================================
 function clinicParts(at: Date) {
   return Object.fromEntries(clinicClock.formatToParts(at).map((part) => [part.type, part.value]))
 }
@@ -58,6 +64,9 @@ export function slotStart({ date, time }: Pick<Slot, 'date' | 'time'>) {
   return new Date(wallClock - offsetAt(wallClock - offsetAt(wallClock)))
 }
 
+// ==========================================
+// Which times are on offer | אילו שעות פנויות
+// ==========================================
 const toMinutes = (time: string) => {
   const [hours, minutes] = time.split(':').map(Number)
   return hours * 60 + minutes
@@ -136,6 +145,9 @@ export function adminSlots(date: string, schedule: Schedule) {
   }))
 }
 
+// ==========================================
+// Calendar grid and date text | לוח השנה ותצוגת תאריכים
+// ==========================================
 export function shiftMonth(month: string, by: number) {
   const [year, m] = month.split('-').map(Number)
   return new Date(Date.UTC(year, m - 1 + by, 1)).toISOString().slice(0, 7)
@@ -162,6 +174,9 @@ function formatShortDate(date: string) {
   return `${day}.${month}.${year}`
 }
 
+// ==========================================
+// WhatsApp message and calendar files | הודעת וואטסאפ וקובצי יומן
+// ==========================================
 export function bookingWhatsappUrl({ date, time, minutes }: Slot) {
   return whatsappLink(
     BOOKING.whatsappMessage

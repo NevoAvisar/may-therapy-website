@@ -1,3 +1,7 @@
+// ==========================================
+// Site settings | הגדרות האתר
+// ==========================================
+// Contact | פרטי קשר
 /* Contact settings – edit here */
 export const CONTACT = {
   // International format, digits only, no "+" or leading 0 (e.g. 972501234567)
@@ -5,6 +9,7 @@ export const CONTACT = {
   whatsappMessage: 'היי מאי 🌿 הגעתי דרך האתר ואשמח לשמוע עוד על הטיפולים ולתאם שיחת היכרות.',
 }
 
+// Booking | תיאום שיחת היכרות
 /* Intro-call booking. May's working hours live in Supabase and are edited at /#admin. */
 export const BOOKING = {
   // Keep these three in sync with book_slot in supabase/schema.sql
@@ -24,12 +29,14 @@ export const BOOKING = {
   eventDetails: 'המועד ממתין לאישור של מאי בוואטסאפ.',
 }
 
+// Database | מסד הנתונים
 /* Fill in both from Supabase: Project Settings → API. The anon key is meant to be public. */
 export const SUPABASE = {
   url: '',
   anonKey: '',
 }
 
+// Email | שליחת מיילים
 /*
  * Booking email, sent through EmailJS (emailjs.com). Fill in all four to turn it on; until then booking carries on
  * through WhatsApp alone and never tells the client an email went out.
@@ -43,11 +50,13 @@ export const EMAILJS = {
   templateToClient: '',
 }
 
+// Link helpers | יצירת קישורים
 export const whatsappLink = (text: string) =>
   `https://wa.me/${CONTACT.whatsappNumber.replace(/\D/g, '')}?text=${encodeURIComponent(text)}`
 
 export const whatsappUrl = whatsappLink(CONTACT.whatsappMessage)
 
+// In-page navigation | ניווט בתוך הדף
 /** Fired by in-page links: expands the hero (if needed), then scrolls to `detail.targetId`. */
 export const HERO_EXPAND_EVENT = 'hero:expand'
 

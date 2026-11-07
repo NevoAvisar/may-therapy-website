@@ -3,6 +3,9 @@ import { createRoot } from 'react-dom/client'
 import App from './App'
 import './index.css'
 
+// ==========================================
+// App entry | נקודת הכניסה לאתר
+// ==========================================
 const AdminPanel = lazy(() => import('./components/AdminPanel'))
 
 const isAdminUrl = () => location.hash === '#admin'

@@ -27,6 +27,9 @@ const heading = 'font-display text-2xl font-light text-forest-moss'
 const primaryButton = 'rounded-full bg-stream-blue px-6 py-3 font-medium text-primary transition hover:bg-forest-moss disabled:opacity-60'
 const quietButton = 'rounded-full bg-white/60 px-4 py-2 text-sm text-forest-moss ring-1 ring-stream-aqua/40 transition hover:bg-river-mist'
 
+// ==========================================
+// May's admin panel: page frame | פאנל הניהול של מאי: מסגרת העמוד
+// ==========================================
 function Page({ children }: { children: ReactNode }) {
   return (
     <div dir="rtl" className="min-h-screen bg-gradient-to-b from-river-mist/50 to-primary px-4 py-8 text-forest-moss md:py-12">
@@ -35,6 +38,9 @@ function Page({ children }: { children: ReactNode }) {
   )
 }
 
+// ==========================================
+// Sign in | התחברות
+// ==========================================
 function LoginForm({ onSignedIn }: { onSignedIn: () => void }) {
   const [problem, setProblem] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
@@ -76,6 +82,9 @@ function LoginForm({ onSignedIn }: { onSignedIn: () => void }) {
   )
 }
 
+// ==========================================
+// Upcoming bookings | רשימת התיאומים הקרובים
+// ==========================================
 function BookingsList({ bookings, onRelease }: { bookings: Booking[]; onRelease: (booking: Booking) => void }) {
   return (
     <section className={card}>
@@ -120,6 +129,9 @@ function whatsappNumberLink(phone: string) {
   return `https://wa.me/${digits}`
 }
 
+// ==========================================
+// Open and close single days and times | פתיחה וסגירה של ימים ושעות
+// ==========================================
 function DayManager({ schedule, today, run }: { schedule: Schedule; today: string; run: (change: () => Promise<void>) => void }) {
   const [date, setDate] = useState(today)
   const [customTime, setCustomTime] = useState('')
@@ -204,6 +216,9 @@ function DayManager({ schedule, today, run }: { schedule: Schedule; today: strin
   )
 }
 
+// ==========================================
+// Regular working week | שבוע העבודה הקבוע
+// ==========================================
 function WeekEditor({ schedule, run }: { schedule: Schedule; run: (change: () => Promise<void>) => void }) {
   const [workDays, setWorkDays] = useState(schedule.workDays)
   const [windows, setWindows] = useState(schedule.windows)
@@ -255,6 +270,9 @@ function WeekEditor({ schedule, run }: { schedule: Schedule; run: (change: () =>
   )
 }
 
+// ==========================================
+// Dashboard | לוח הבקרה
+// ==========================================
 function Dashboard({ onSignOut }: { onSignOut: () => void }) {
   const [schedule, setSchedule] = useState<Schedule | null>(null)
   const [bookings, setBookings] = useState<Booking[]>([])
@@ -318,6 +336,9 @@ function Dashboard({ onSignOut }: { onSignOut: () => void }) {
   )
 }
 
+// ==========================================
+// Admin entry point | נקודת הכניסה לפאנל
+// ==========================================
 export default function AdminPanel() {
   const [state, setState] = useState<'checking' | 'signedOut' | 'signedIn'>('checking')
 

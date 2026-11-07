@@ -1,6 +1,9 @@
 import { useRef } from 'react'
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion'
 
+// ==========================================
+// Roots photo at the bottom of the page | תמונת השורשים בתחתית הדף
+// ==========================================
 /* Photo by Jens Aber on Unsplash – to self-host, put it in /public and set ROOTS_SRC / ROOTS_SRCSET to its path. */
 const ROOTS_PHOTO = 'https://images.unsplash.com/photo-1748602471338-e22a2e58dce6?auto=format&fit=crop&q=75'
 const ROOTS_SRC = `${ROOTS_PHOTO}&w=2400`

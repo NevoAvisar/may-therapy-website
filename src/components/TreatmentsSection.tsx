@@ -4,6 +4,9 @@ import Reveal from './Reveal'
 import WriteIn from './WriteIn'
 import { cn } from '../lib/cn'
 
+// ==========================================
+// Treatment cards data | נתוני כרטיסי הטיפולים
+// ==========================================
 interface Treatment {
   id: string
   num: string
@@ -48,6 +51,9 @@ const TREATMENTS: Treatment[] = [
   },
 ]
 
+// ==========================================
+// Treatment card | כרטיס טיפול
+// ==========================================
 function BentoCard({ t, large }: { t: Treatment; large?: boolean }) {
   const ref = useRef<HTMLElement>(null)
 
@@ -66,8 +72,7 @@ function BentoCard({ t, large }: { t: Treatment; large?: boolean }) {
       id={t.id}
       onMouseMove={onMove}
       className={cn(
-        'glass group relative flex h-full flex-col overflow-hidden rounded-[28px] p-7 transition-transform duration-500 hover:-translate-y-1 md:p-9 lg:p-8',
-        large && 'md:min-h-[460px] lg:min-h-0',
+        'glass group relative flex h-full flex-col overflow-hidden rounded-[28px] p-7 transition-transform duration-500 hover:-translate-y-1 md:p-8',
       )}
     >
       <div aria-hidden className={cn('absolute inset-0 -z-10 bg-gradient-to-br opacity-90', t.tint)} />
@@ -111,20 +116,23 @@ function BentoCard({ t, large }: { t: Treatment; large?: boolean }) {
   )
 }
 
+// ==========================================
+// Section 2: Treatments | אזור הטיפולים - ממורכז למסך המשתמש
+// ==========================================
 export default function TreatmentsSection() {
   const [first, ...others] = TREATMENTS
   return (
-    // On laptops and up the whole section – heading and all three cards – fits one screen below the navbar:
-    // the bento becomes a single asymmetric row and the section centres itself in the viewport.
+    // Fills the screen with its content centred both ways, so the three cards sit in the middle of the viewport.
+    // ממלא את המסך והתוכן ממורכז אנכית ואופקית, כך ששלושת הכרטיסים יושבים באמצע מסך המשתמש.
     <section
       id="treatments"
       aria-labelledby="treatments-title"
-      className="relative isolate flex flex-col justify-center bg-gradient-to-b from-tint-petal from-60% to-tint-sage py-24 md:py-32 lg:min-h-[100svh] lg:scroll-mt-0 lg:pb-12 lg:pt-28"
+      className="relative isolate flex min-h-[100svh] flex-col justify-center bg-gradient-to-b from-tint-petal from-60% to-tint-sage py-24 md:py-20"
     >
       <div aria-hidden className="absolute -top-20 start-[10%] -z-10 h-72 w-72 rounded-full bg-river-mist blur-3xl" />
       <div aria-hidden className="absolute bottom-24 end-[15%] -z-10 h-64 w-64 rounded-full bg-flower-bloom/40 blur-3xl" />
 
-      <div className="page-container">
+      <div className="page-container md:px-16 lg:px-20">
         <Reveal className="max-w-2xl lg:flex lg:max-w-none lg:items-end lg:justify-between lg:gap-12">
           <div>
             <span className="glass-mist inline-block rounded-full px-4 py-1.5 text-sm text-stream-blue">הטיפולים</span>
@@ -143,8 +151,8 @@ export default function TreatmentsSection() {
           />
         </Reveal>
 
-        <div className="mt-12 grid gap-5 md:grid-cols-2 md:grid-rows-2 lg:mt-10 lg:grid-cols-[1.3fr_1fr_1fr] lg:grid-rows-1">
-          <Reveal className="h-full md:row-span-2 lg:row-span-1">
+        <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr]">
+          <Reveal className="h-full md:col-span-2 lg:col-span-1">
             <BentoCard t={first} large />
           </Reveal>
           {others.map((t, i) => (

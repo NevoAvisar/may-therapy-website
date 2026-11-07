@@ -9,6 +9,9 @@ import {
   type MotionValue,
 } from 'framer-motion'
 
+// ==========================================
+// Tree spine along the page edge | גזע העץ בצד הדף
+// ==========================================
 /**
  * Persistent right-side spine (RTL "start" edge).
  * A vine grows down with the scroll, a pastel bud blooms as each anchor section is
@@ -228,6 +231,9 @@ export default function TreeSpine({ bloomAt, rootsAt, visible = true }: TreeSpin
   )
 }
 
+// ==========================================
+// Leaf | עלה
+// ==========================================
 function Leaf({ at, grow, flip }: { at: number; grow: MotionValue<number>; flip: boolean }) {
   const scale = useTransform(grow, [at - 0.015, at + 0.02], [0, 1], { clamp: true })
   const left = `${(vineX(at * VB_H) / VB_W) * 100}%`
@@ -255,6 +261,9 @@ function Leaf({ at, grow, flip }: { at: number; grow: MotionValue<number>; flip:
   )
 }
 
+// ==========================================
+// Flower | פרח
+// ==========================================
 function Bloom({ at, open, index, reduceMotion }: { at: number; open: boolean; index: number; reduceMotion: boolean }) {
   const left = `${(vineX(at * VB_H) / VB_W) * 100}%`
   const tilt = index % 2 === 0 ? -12 : 14

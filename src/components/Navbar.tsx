@@ -5,6 +5,9 @@ import { goToSection } from '../config'
 import { scrollToTarget } from '../lib/smoothScroll'
 import { cn } from '../lib/cn'
 
+// ==========================================
+// Navigation links, in page order | קישורי התפריט לפי סדר הדף
+// ==========================================
 const LINKS = [
   { id: 'hero', label: 'ראשי' },
   { id: 'intro', label: 'המרחב' },
@@ -14,6 +17,7 @@ const LINKS = [
 ]
 const BOOKING = { id: 'booking', label: 'בואו נמצא זמן' }
 
+/** Tracks which section is mid-screen, to highlight its link | עוקב אחרי האזור שבמרכז המסך כדי להדגיש את הקישור שלו */
 function useActiveSection(ids: string[]) {
   const [active, setActive] = useState<string | null>(null)
   useEffect(() => {
@@ -35,6 +39,9 @@ function useActiveSection(ids: string[]) {
 
 const ids = [...LINKS, BOOKING].map((l) => l.id)
 
+// ==========================================
+// Booking button | כפתור בואו נמצא זמן
+// ==========================================
 function BookingLink({ onClick, active, className }: { onClick: (e: MouseEvent) => void; active: boolean; className?: string }) {
   return (
     <a
@@ -54,6 +61,9 @@ function BookingLink({ onClick, active, className }: { onClick: (e: MouseEvent) 
   )
 }
 
+// ==========================================
+// Floating navigation bar | סרגל הניווט הצף
+// ==========================================
 export default function Navbar() {
   const active = useActiveSection(ids)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -74,6 +84,7 @@ export default function Navbar() {
             מאי
           </a>
 
+          {/* Tablet and desktop: all links in a row | טאבלט ומחשב: כל הקישורים בשורה אחת */}
           <ul className="hidden items-center gap-0.5 md:flex">
             {LINKS.map((link) => (
               <li key={link.id} className="relative">
@@ -102,6 +113,7 @@ export default function Navbar() {
             </li>
           </ul>
 
+          {/* Phone: booking button and a compact menu | טלפון: כפתור תיאום ותפריט מצומצם */}
           <div className="flex items-center gap-1.5 md:hidden">
             <BookingLink onClick={go(BOOKING.id)} active={active === BOOKING.id} className="px-4" />
             <button

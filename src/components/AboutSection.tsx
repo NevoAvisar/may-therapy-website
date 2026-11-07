@@ -2,14 +2,20 @@ import { Leaf } from 'lucide-react'
 import Reveal from './Reveal'
 import WriteIn from './WriteIn'
 
+// ==========================================
+// About content | תוכן אזור עליי
+// ==========================================
 /* May's portrait – put a square photo in /public (e.g. may.jpg) and set '/may.jpg'. Empty shows the monogram. */
 const PORTRAIT_SRC = ''
 
 const VALUES = ['הקשבה לפני הכול', 'בקצב שלך', 'מגע רק בהסכמה']
 
+// ==========================================
+// Section 4: About May | אזור עליי - ממוסגר בגובה המסך
+// ==========================================
 export default function AboutSection() {
   return (
-    <section id="about" aria-labelledby="about-title" className="relative isolate bg-gradient-to-b from-tint-lavender from-60% to-tint-river py-24 md:py-32">
+    <section id="about" aria-labelledby="about-title" className="relative isolate flex min-h-[100svh] items-center bg-gradient-to-b from-tint-lavender from-60% to-tint-river py-24">
       <div aria-hidden className="absolute -top-10 end-[12%] -z-10 h-72 w-72 rounded-full bg-flower-bloom/35 blur-3xl" />
       <div aria-hidden className="absolute bottom-24 start-[8%] -z-10 h-80 w-80 rounded-full bg-river-mist blur-3xl" />
 

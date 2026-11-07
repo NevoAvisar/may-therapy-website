@@ -1,5 +1,8 @@
 import { EMAILJS } from '../config'
 
+// ==========================================
+// Booking email through EmailJS | שליחת מייל תיאום דרך EmailJS
+// ==========================================
 export type Inquiry = { name: string; email: string; phone: string; message: string }
 
 const SEND_URL = 'https://api.emailjs.com/api/v1.0/email/send'
