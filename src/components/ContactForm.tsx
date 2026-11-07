@@ -1,22 +1,11 @@
-import { useState, type FormEvent, type ReactNode } from 'react'
+import { useState, type FormEvent } from 'react'
 import { CheckCircle2, Send } from 'lucide-react'
+import Field, { fieldClasses } from './Field'
 import WhatsAppIcon from './WhatsAppIcon'
 import { whatsappLink } from '../config'
 import { emailConfigured, sendInquiry, type Inquiry } from '../lib/email'
 
 type Status = 'idle' | 'sending' | { sent: boolean; inquiry: Inquiry }
-
-const fieldClasses =
-  'w-full rounded-2xl border border-stream-aqua/40 bg-white/60 px-4 py-3 text-forest-moss placeholder:text-forest-moss/40 transition focus:bg-white/80'
-
-function Field({ label, children }: { label: string; children: ReactNode }) {
-  return (
-    <label className="block text-start text-sm text-forest-moss/80">
-      <span className="mb-1.5 block">{label}</span>
-      {children}
-    </label>
-  )
-}
 
 function inquiryAsWhatsapp({ name, phone, message }: Inquiry) {
   return whatsappLink([`היי מאי, כאן ${name}.`, message, phone && `טלפון: ${phone}`].filter(Boolean).join('\n'))

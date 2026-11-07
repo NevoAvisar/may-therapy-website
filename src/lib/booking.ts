@@ -6,6 +6,12 @@ import { BOOKING, whatsappLink } from '../config'
  */
 
 export type Slot = { date: string; time: string; minutes: number }
+export type TimeWindow = { start: string; end: string }
+/** An exception to the regular week. An empty time means the whole day. */
+export type Override = { date: string; time: string; is_open: boolean }
+/** Taken stretches in epoch ms, call and buffer included. */
+export type Busy = { start: number; end: number }
+export type Schedule = { workDays: number[]; windows: TimeWindow[]; overrides: Override[]; busy: Busy[] }
 
 const CLINIC_TIME_ZONE = 'Asia/Jerusalem'
 
@@ -30,6 +36,12 @@ export function clinicToday(now: Date) {
   return `${year}-${month}-${day}`
 }
 
+/** Israel date and time of an instant, e.g. a booking loaded from the database. */
+export function clinicSlot(at: string | Date) {
+  const { year, month, day, hour, minute } = clinicParts(new Date(at))
+  return { date: `${year}-${month}-${day}`, time: `${hour}:${minute}` }
+}
+
 const utcDate = (date: string) => new Date(`${date}T00:00:00Z`)
 
 export function addDays(date: string, days: number) {
@@ -46,26 +58,82 @@ export function slotStart({ date, time }: Pick<Slot, 'date' | 'time'>) {
   return new Date(wallClock - offsetAt(wallClock - offsetAt(wallClock)))
 }
 
-/** Slot times still open on `date`: the times in `times` that are far enough ahead of `now`. */
-export function openTimes(date: string, times: string[], now: Date) {
-  const earliest = now.getTime() + BOOKING.minLeadHours * 3_600_000
-  return times.filter((time) => slotStart({ date, time }).getTime() >= earliest)
+const toMinutes = (time: string) => {
+  const [hours, minutes] = time.split(':').map(Number)
+  return hours * 60 + minutes
 }
 
-export function isBookable(date: string, now: Date) {
+const toTime = (minutes: number) => `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`
+
+const slotLength = BOOKING.callMinutes + BOOKING.bufferMinutes
+
+/** Regular start times: back to back, one call plus its buffer apart, ending inside the window. */
+export function windowTimes(windows: TimeWindow[]) {
+  return windows.flatMap(({ start, end }) => {
+    const times: string[] = []
+    for (let at = toMinutes(start); at + BOOKING.callMinutes <= toMinutes(end); at += slotLength) times.push(toTime(at))
+    return times
+  })
+}
+
+const findOverride = (schedule: Schedule, date: string, time: string) =>
+  schedule.overrides.find((o) => o.date === date && o.time === time)
+
+/** Whether the day is open: May's choice for that date, otherwise the regular week. */
+export function isDayOpen(date: string, schedule: Schedule) {
+  return findOverride(schedule, date, '')?.is_open ?? schedule.workDays.includes(utcDate(date).getUTCDay())
+}
+
+function offeredTimes(date: string, schedule: Schedule) {
+  if (findOverride(schedule, date, '')?.is_open === false) return []
+  const regular = isDayOpen(date, schedule) ? windowTimes(schedule.windows) : []
+  const custom = schedule.overrides.filter((o) => o.date === date && o.time && o.is_open).map((o) => o.time)
+  return [...new Set([...regular, ...custom])]
+    .filter((time) => findOverride(schedule, date, time)?.is_open !== false)
+    .sort()
+}
+
+/** Whether a call here, with its buffer, would touch a taken time. */
+function isTaken(start: number, schedule: Schedule) {
+  const end = start + slotLength * 60_000
+  return schedule.busy.some((busy) => start < busy.end && busy.start < end)
+}
+
+/** Times a client can book on `date`: offered, far enough ahead of `now`, and clear of other calls. */
+export function openTimes(date: string, schedule: Schedule, now: Date) {
+  const earliest = now.getTime() + BOOKING.minLeadHours * 3_600_000
+  return offeredTimes(date, schedule).filter((time) => {
+    const start = slotStart({ date, time }).getTime()
+    return start >= earliest && !isTaken(start, schedule)
+  })
+}
+
+export function isBookable(date: string, schedule: Schedule, now: Date) {
   const today = clinicToday(now)
   if (date < today || date > addDays(today, BOOKING.daysAhead)) return false
-  if (!BOOKING.workDays.includes(utcDate(date).getUTCDay()) || BOOKING.blockedDates.includes(date)) return false
-  return openTimes(date, [...BOOKING.morningSlots, ...BOOKING.eveningSlots], now).length > 0
+  return openTimes(date, schedule, now).length > 0
 }
 
-export function firstBookableDate(now: Date) {
+export function firstBookableDate(schedule: Schedule, now: Date) {
   const today = clinicToday(now)
   for (let i = 0; i <= BOOKING.daysAhead; i++) {
     const date = addDays(today, i)
-    if (isBookable(date, now)) return date
+    if (isBookable(date, schedule, now)) return date
   }
   return today
+}
+
+/** Every slot May can act on for a date. Closed regular slots stay listed so she can reopen them. */
+export function adminSlots(date: string, schedule: Schedule) {
+  const regular = windowTimes(schedule.windows)
+  const custom = schedule.overrides.filter((o) => o.date === date && o.time).map((o) => o.time)
+  const offered = offeredTimes(date, schedule)
+  return [...new Set([...(isDayOpen(date, schedule) ? regular : []), ...custom])].sort().map((time) => ({
+    time,
+    isOpen: offered.includes(time),
+    isCustom: !regular.includes(time),
+    isBooked: schedule.busy.some((busy) => busy.start === slotStart({ date, time }).getTime()),
+  }))
 }
 
 export function shiftMonth(month: string, by: number) {
