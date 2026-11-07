@@ -50,6 +50,29 @@ export const EMAILJS = {
   templateToClient: '',
 }
 
+// Analytics | סטטיסטיקה ושיווק
+/*
+ * Fill in an ID to turn a tool on (e.g. 'G-XXXXXXXXXX' and the numeric pixel ID). Each one then loads only for
+ * visitors who approve its cookies, through src/lib/trackers.ts.
+ */
+export const ANALYTICS = {
+  googleAnalyticsId: '',
+  metaPixelId: '',
+}
+
+// Legal pages | דפי הצהרת הנגישות ומדיניות הפרטיות
+/* Shown on /accessibility and /privacy. Anything left empty appears there as a marked [להשלמה] gap. */
+export const LEGAL = {
+  lastUpdated: '7 בנובמבר 2026',
+  ownerName: '',
+  privacyEmail: '',
+  coordinatorName: '',
+  coordinatorPhone: '',
+  coordinatorEmail: '',
+  // The clinic: parking, entrance, steps or lift, toilets, any other arrangements
+  physicalAccess: '',
+}
+
 // Link helpers | יצירת קישורים
 export const whatsappLink = (text: string) =>
   `https://wa.me/${CONTACT.whatsappNumber.replace(/\D/g, '')}?text=${encodeURIComponent(text)}`

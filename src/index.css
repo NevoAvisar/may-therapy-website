@@ -9,6 +9,8 @@
   html {
     overscroll-behavior-y: none;
     -webkit-text-size-adjust: 100%;
+    /* Keeps a focused element clear of the cookie banner */
+    scroll-padding-bottom: var(--consent-h, 0px);
   }
   body {
     @apply bg-primary font-sans text-forest-moss antialiased;
@@ -28,6 +30,9 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+  .animate-soft-pulse {
+    display: none;
   }
 }
 

@@ -1,0 +1,198 @@
+/* ==========================================
+   Accessibility modes | מצבי נגישות
+   ========================================== */
+/* Each block is switched on by a class on <html>, set from the widget in src/lib/a11y.ts */
+
+/* Text size: every size and gap on the site is in rem, so the layout grows with it | גודל טקסט */
+html.a11y-text-1 {
+  font-size: 112.5%;
+}
+html.a11y-text-2 {
+  font-size: 125%;
+}
+html.a11y-text-3 {
+  font-size: 150%;
+}
+
+/* The nav's breakpoints are in px, so they can't see the text growing: enlarged text falls back to the compact menu
+   sooner, and on a phone at the largest size the booking button makes way, as the menu lists it too. */
+@media (max-width: 1023px) {
+  html:is(.a11y-text-2, .a11y-text-3) [data-nav-row] {
+    display: none;
+  }
+  html:is(.a11y-text-2, .a11y-text-3) div[data-nav-compact] {
+    display: flex;
+  }
+  html:is(.a11y-text-2, .a11y-text-3) ul[data-nav-compact] {
+    display: flex;
+  }
+  html:is(.a11y-text-2, .a11y-text-3) [data-stack-large-text] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 479px) {
+  html.a11y-text-3 div[data-nav-compact] > a {
+    display: none;
+  }
+}
+
+/* The footer's height is set to match the roots photo, which enlarged text can outgrow: it becomes a solid band instead */
+html:is(.a11y-text-1, .a11y-text-2, .a11y-text-3) #site-footer {
+  height: auto;
+  padding-block: 0.75rem;
+  background-color: #1f2a23;
+}
+
+/* Readable font | גופן קריא */
+html.a11y-font,
+html.a11y-font * {
+  font-family: Arial, Heebo, Rubik, 'Helvetica Neue', Helvetica, 'Segoe UI', system-ui, sans-serif !important;
+}
+
+/* ------------------------------------------
+   High contrast | ניגודיות גבוהה
+   ------------------------------------------ */
+/* White on black, with everything you can act on in yellow. Tints are dropped rather than recoloured, and photos
+   with no meaning of their own go too, so no text is left sitting on an image. */
+html.a11y-contrast-high {
+  background-color: #000;
+}
+html.a11y-contrast-high *,
+html.a11y-contrast-high *::before,
+html.a11y-contrast-high *::after {
+  background-color: transparent !important;
+  background-image: none !important;
+  color: #fff !important;
+  border-color: #fff !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+html.a11y-contrast-high :is(a, button, summary),
+html.a11y-contrast-high :is(a, button, summary) * {
+  color: #ff0 !important;
+}
+html.a11y-contrast-high :is(a, button) {
+  border-color: #ff0 !important;
+}
+html.a11y-contrast-high a {
+  text-decoration: underline;
+}
+/* Anything that floats over the page stays solid, or the text beneath shows through it */
+html.a11y-contrast-high [data-surface] {
+  background-color: #000 !important;
+  border: 2px solid #ff0 !important;
+}
+html.a11y-contrast-high :is(input, textarea, select) {
+  border: 2px solid #ff0 !important;
+}
+html.a11y-contrast-high ::placeholder {
+  color: #ccc !important;
+}
+html.a11y-contrast-high :is([aria-pressed='true'], [aria-checked='true'], [aria-current]) {
+  background-color: #ff0 !important;
+}
+html.a11y-contrast-high :is([aria-pressed='true'], [aria-checked='true'], [aria-current]),
+html.a11y-contrast-high :is([aria-pressed='true'], [aria-checked='true'], [aria-current]) * {
+  color: #000 !important;
+}
+html.a11y-contrast-high :is(button:disabled, [aria-disabled='true']),
+html.a11y-contrast-high :is(button:disabled, [aria-disabled='true']) * {
+  color: #a6a6a6 !important;
+}
+html.a11y-contrast-high :focus-visible {
+  outline: 3px solid #ff0 !important;
+  outline-offset: 2px;
+}
+html.a11y-contrast-high img[alt=''],
+html.a11y-contrast-high .paper-grain {
+  visibility: hidden !important;
+}
+
+/* ------------------------------------------
+   Inverted colours and grayscale | צבעים הפוכים וגווני אפור
+   ------------------------------------------ */
+/* On <html> only: a filter on any other element would become the containing block of everything fixed inside it. */
+html.a11y-contrast-invert {
+  background-color: #fff;
+  filter: invert(1) hue-rotate(180deg);
+}
+/* Photos flip back, so faces and trees stay true */
+html.a11y-contrast-invert :is(img, video) {
+  filter: invert(1) hue-rotate(180deg);
+}
+html.a11y-contrast-gray {
+  background-color: #fff;
+  filter: grayscale(1);
+}
+
+/* ------------------------------------------
+   Highlighted links and buttons | הדגשת קישורים וכפתורים
+   ------------------------------------------ */
+/* Pressed buttons are left out, so a chosen date or setting still shows as chosen */
+html.a11y-links :is(a, button, summary):not([aria-pressed='true']) {
+  background-color: #fff4c2 !important;
+  background-image: none !important;
+  color: #1f2a23 !important;
+  text-decoration: underline !important;
+  text-decoration-thickness: 2px !important;
+  text-underline-offset: 0.2em;
+  outline: 2px solid #8a4b00;
+  outline-offset: -2px;
+}
+html.a11y-links :is(a, button, summary):not([aria-pressed='true']) * {
+  color: #1f2a23 !important;
+}
+html.a11y-links [role='switch'] {
+  text-decoration: none !important;
+}
+
+/* ------------------------------------------
+   Stop animations | עצירת אנימציות
+   ------------------------------------------ */
+/* JS-driven motion (GSAP, Lenis, the sun, framer) is stopped through useMotionStopped and MotionGlobalConfig */
+html.a11y-no-motion,
+html.a11y-no-motion *,
+html.a11y-no-motion *::before,
+html.a11y-no-motion *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+html.a11y-no-motion .animate-soft-pulse {
+  display: none;
+}
+
+/* ------------------------------------------
+   Big cursor | סמן גדול
+   ------------------------------------------ */
+html.a11y-cursor-white,
+html.a11y-cursor-white * {
+  cursor: url('/cursors/arrow-white.png') 8 8, auto !important;
+}
+html.a11y-cursor-white :is(a, button, label, summary, [role='switch']),
+html.a11y-cursor-white :is(a, button, label, summary, [role='switch']) * {
+  cursor: url('/cursors/hand-white.png') 21 6, pointer !important;
+}
+html.a11y-cursor-black,
+html.a11y-cursor-black * {
+  cursor: url('/cursors/arrow-black.png') 8 8, auto !important;
+}
+html.a11y-cursor-black :is(a, button, label, summary, [role='switch']),
+html.a11y-cursor-black :is(a, button, label, summary, [role='switch']) * {
+  cursor: url('/cursors/hand-black.png') 21 6, pointer !important;
+}
+html:is(.a11y-cursor-white, .a11y-cursor-black) :is(input, textarea) {
+  cursor: text !important;
+}
+
+/* ------------------------------------------
+   Focus indicator | סימון מיקוד
+   ------------------------------------------ */
+/* Two tones, so it shows on the cream page, the dark footer and high contrast alike. Containers only focused by script are skipped. */
+html.a11y-focus :focus-visible:not([tabindex='-1']) {
+  outline: 4px solid #ffd60a !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 3px #000 !important;
+}

@@ -10,7 +10,10 @@ import BookingSection from './components/BookingSection'
 import FloatingWhatsApp from './components/FloatingWhatsApp'
 import SunCursor from './components/SunCursor'
 import WriteIn from './components/WriteIn'
+import { MAIN_ID } from './components/SkipLink'
 import { goToSection } from './config'
+import { useMotionStopped } from './lib/a11y'
+import { openCookieSettings } from './lib/consent'
 import { initSmoothScroll } from './lib/smoothScroll'
 
 // ==========================================
@@ -34,14 +37,14 @@ const PAUSE_AT = ['intro', 'treatments', 'faq', 'about', 'booking']
 // ==========================================
 function ExpandedCaption() {
   return (
-    <div className="glass flex max-w-xl flex-col items-center gap-5 rounded-[32px] !bg-primary/55 px-8 py-9 text-center">
+    <div className="glass flex max-w-xl flex-col items-center gap-5 rounded-[32px] !bg-primary/90 px-8 py-9 text-center">
       <span className="inline-flex items-center gap-2 text-sm text-stream-blue">
         <Leaf className="h-4 w-4" aria-hidden /> מרחב טיפולי אישי
       </span>
       <p className="font-display text-3xl font-light leading-snug text-forest-moss md:text-4xl">
         מקום לעצור, לנשום ולהתחבר מחדש
       </p>
-      <p className="text-forest-moss/75">מאי · טיפול במגע ואיזון גוף-נפש</p>
+      <p className="text-forest-moss/85">מאי · טיפול במגע ואיזון גוף-נפש</p>
       <div className="flex flex-wrap justify-center gap-3">
         <button
           type="button"
@@ -91,10 +94,30 @@ function IntroSection() {
         <WriteIn
           delay={0.4}
           text="המרחב שלי נועד לרגעים שבהם צריך להאט: להניח את המשקל, לחזור לנשימה ולהרגיש שוב קרקע יציבה. בלי מהירות ובלי ציפיות – רק הקשבה, מגע עדין והזמנה לחזור לעצמך."
-          className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-forest-moss/75"
+          className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-forest-moss/85"
         />
       </div>
     </section>
+  )
+}
+
+// ==========================================
+// Footer links | קישורים בכותרת התחתונה
+// ==========================================
+function FooterLinks() {
+  const link = 'underline underline-offset-2'
+  return (
+    <nav aria-label="מידע על האתר" className="flex flex-wrap items-center justify-center gap-x-3 rounded-2xl bg-black/60 px-4 py-1">
+      <a href="/accessibility" className={link}>
+        הצהרת נגישות
+      </a>
+      <a href="/privacy" className={link}>
+        מדיניות פרטיות
+      </a>
+      <button type="button" onClick={openCookieSettings} className={link}>
+        הגדרות עוגיות
+      </button>
+    </nav>
   )
 }
 
@@ -104,7 +127,9 @@ function IntroSection() {
 export default function App() {
   const [heroExpanded, setHeroExpanded] = useState(false)
 
-  useEffect(() => initSmoothScroll(PAUSE_AT), [])
+  const motionStopped = useMotionStopped()
+
+  useEffect(() => initSmoothScroll(PAUSE_AT), [motionStopped])
 
   return (
     <div dir="rtl" id="top" className="relative min-h-screen bg-primary text-forest-moss">
@@ -131,7 +156,7 @@ export default function App() {
         expandedCaption={<ExpandedCaption />}
         onExpandChange={setHeroExpanded}
       >
-        <main>
+        <main id={MAIN_ID} tabIndex={-1} className="focus-visible:ring-0 focus-visible:ring-offset-0">
           <IntroSection />
           <TreatmentsSection />
           <FaqSection />
@@ -141,10 +166,11 @@ export default function App() {
 
         {/* Footer | כותרת תחתונה */}
         {/* Sits over the bottom of the forest photo; its height is matched in WoodlandRoots */}
-        <footer id="site-footer" className="relative flex h-28 items-center sm:h-20">
-          <div className="page-container flex w-full flex-col items-center justify-between gap-1.5 text-sm sm:pe-24 text-primary [text-shadow:0_1px_3px_rgba(0,0,0,0.6)] sm:flex-row">
-            <p className="rounded-full bg-black/25 px-4 py-1 backdrop-blur-sm">© 2026 MKRA Technology. כל הזכויות שמורות.</p>
-            <p className="rounded-full bg-black/25 px-4 py-1 backdrop-blur-sm">נבנה באהבה ובנשימה עמוקה 🌿</p>
+        <footer id="site-footer" className="relative flex h-48 items-center sm:h-36 lg:h-20">
+          <div className="page-container flex w-full flex-col items-center justify-center gap-1.5 pe-24 text-sm text-primary [text-shadow:0_1px_3px_rgba(0,0,0,0.6)] lg:flex-row lg:justify-between">
+            <p className="rounded-2xl bg-black/60 px-4 py-1 text-center backdrop-blur-sm">© 2026 MKRA Technology. כל הזכויות שמורות.</p>
+            <FooterLinks />
+            <p className="rounded-2xl bg-black/60 px-4 py-1 text-center backdrop-blur-sm">נבנה באהבה ובנשימה עמוקה 🌿</p>
           </div>
         </footer>
       </ScrollExpandMedia>

@@ -1,4 +1,5 @@
 import { useEffect, useRef, type CSSProperties } from 'react'
+import { a11yPrefs, useMotionStopped } from '../lib/a11y'
 
 /**
  * A small sun takes the place of the mouse pointer, with soft morning light trailing behind it that blooms
@@ -7,7 +8,7 @@ import { useEffect, useRef, type CSSProperties } from 'react'
  * The icon sits exactly on the pointer. Mark any element with `data-sun-beacon` to make it draw the light.
  * The light's position, scale and opacity are written straight to the layers from one rAF loop
  * (compositor-only, no React render per frame), and the loop sleeps once the pointer and the page have been
- * still for a moment. Mouse only: touch has no cursor to follow, and reduced-motion users keep the plain page.
+ * still for a moment. Mouse only: touch has no cursor to follow. It stands down for reduced motion and for the big cursor.
  */
 
 // ==========================================
@@ -88,6 +89,10 @@ function SunIcon() {
 // Sun cursor, mouse only - never runs on touch screens | סמן השמש, לעכבר בלבד - לא פועל במסכי מגע
 // ==========================================
 export default function SunCursor() {
+  const motionStopped = useMotionStopped()
+  const { cursor } = a11yPrefs.use()
+  const shining = !motionStopped && cursor === 'none'
+
   const sunRef = useRef<HTMLDivElement>(null)
   const lightRef = useRef<HTMLDivElement>(null)
   const iconRef = useRef<HTMLDivElement>(null)
@@ -102,9 +107,8 @@ export default function SunCursor() {
     const iconScale = iconScaleRef.current
     const aura = auraRef.current
     const bloom = bloomRef.current
-    if (!sun || !light || !icon || !iconScale || !aura || !bloom) return
+    if (!sun || !light || !icon || !iconScale || !aura || !bloom || !shining) return
     if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
     const root = document.documentElement
     let pointerX = 0
@@ -186,9 +190,9 @@ export default function SunCursor() {
       window.removeEventListener('pointerdown', onTouch)
       window.removeEventListener('scroll', wake)
       root.removeEventListener('mouseleave', onLeave)
-      root.classList.remove(ACTIVE_CLASS)
+      onLeave()
     }
-  }, [])
+  }, [shining])
 
   return (
     <div ref={sunRef} aria-hidden className="pointer-events-none fixed left-0 top-0 z-[9999] opacity-0 transition-opacity duration-300">

@@ -1,9 +1,10 @@
 import { Fragment, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ChevronDown } from 'lucide-react'
 import { HERO_EXPAND_EVENT } from '../config'
+import { useMotionStopped } from '../lib/a11y'
 import { cn } from '../lib/cn'
 import { scrollToTarget } from '../lib/smoothScroll'
 
@@ -140,21 +141,33 @@ export default function ScrollExpandMedia({
   onExpandChange,
   children,
 }: ScrollExpandMediaProps) {
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = useMotionStopped()
 
   const [mediaFullyExpanded, setMediaFullyExpanded] = useState(false)
   const sectionRef = useRef<HTMLElement>(null)
+  const videoRef = useRef<HTMLVideoElement>(null)
   const triggerRef = useRef<ScrollTrigger | null>(null)
+  // Where the page stood as the effect below last cleaned up | היכן עמד הדף בפעם האחרונה שהאפקט למטה נוקה
+  const carriedScroll = useRef<{ y: number; pinned: number; reduced: boolean } | null>(null)
 
   useLayoutEffect(() => {
     const section = sectionRef.current
     if (!section) return
 
     // Reduced motion: no pin, no scrub – the hero simply starts expanded.
+    // The pin adds its scroll length to the page, so toggling "stop animations" moves everything below the hero
+    // by that much. Carry the scroll with it, or the reader lands somewhere else.
+    // הנעיצה מוסיפה לדף את אורך הגלילה שלה, לכן הפעלת "עצירת אנימציות" מזיזה את כל מה שמתחת ל-Hero, והגלילה עוברת איתו.
+    const carried = carriedScroll.current?.reduced === reduceMotion ? null : carriedScroll.current
+    carriedScroll.current = null
+
     if (reduceMotion) {
       gsap.set(section, { '--p': 1 })
       setMediaFullyExpanded(true)
-      return
+      if (carried) window.scrollTo(0, Math.max(0, carried.y - carried.pinned))
+      return () => {
+        carriedScroll.current = { y: window.scrollY, pinned: 0, reduced: true }
+      }
     }
 
     let expanded = false
@@ -204,8 +217,16 @@ export default function ScrollExpandMedia({
     syncExpanded()
     window.addEventListener('scroll', syncExpanded, { passive: true })
 
+    // After this frame's effects, as ScrollTrigger's first refresh and Lenis starting up both reset the scroll.
+    // אחרי האפקטים של הפריים הזה, כי הרענון הראשון של ScrollTrigger והפעלת Lenis מאפסים את הגלילה.
+    const pin = triggerRef.current
+    const restore = carried?.y && pin ? requestAnimationFrame(() => window.scrollTo(0, carried.y + pin.end - pin.start)) : 0
+
     return () => {
+      cancelAnimationFrame(restore)
       window.removeEventListener('scroll', syncExpanded)
+      const st = triggerRef.current
+      if (st) carriedScroll.current = { y: window.scrollY, pinned: st.end - st.start, reduced: false }
       triggerRef.current = null
       ctx.revert()
     }
@@ -214,6 +235,13 @@ export default function ScrollExpandMedia({
   useEffect(() => {
     onExpandChange?.(mediaFullyExpanded)
   }, [mediaFullyExpanded, onExpandChange])
+
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) return
+    if (reduceMotion) video.pause()
+    else void video.play()
+  }, [reduceMotion])
 
   // In-page links: the glide passes through the pin, so the scrub plays on the way.
   useEffect(() => {
@@ -311,9 +339,10 @@ export default function ScrollExpandMedia({
               <div className="absolute inset-0" style={{ maskImage: MIST_MASK, WebkitMaskImage: MIST_MASK }}>
                 {mediaType === 'video' ? (
                   <video
+                    ref={videoRef}
                     src={mediaSrc}
                     poster={posterSrc}
-                    autoPlay
+                    autoPlay={!reduceMotion}
                     muted
                     loop
                     playsInline
@@ -339,6 +368,7 @@ export default function ScrollExpandMedia({
                   transition={{ duration: 0.5, ease: [0.22, 0.61, 0.36, 1] }}
                   style={{ pointerEvents: mediaFullyExpanded ? 'auto' : 'none' }}
                   aria-hidden={!mediaFullyExpanded}
+                  inert={!mediaFullyExpanded}
                 >
                   {expandedCaption}
                 </motion.div>
@@ -351,6 +381,16 @@ export default function ScrollExpandMedia({
             aria-hidden
             className="pointer-events-none absolute inset-x-0 bottom-0 z-[15] h-[32dvh]"
             style={{ opacity: 'var(--mist)', background: MIST_FADE }}
+          />
+
+          {/* Dark veil behind the headline, so it holds its contrast over the bright waterfall; gone with the headline */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 z-[15]"
+            style={{
+              opacity: 'calc(1 - var(--p) * 2)',
+              background: 'radial-gradient(ellipse 60% 40% at center, rgba(30,44,36,0.62) 40%, rgba(30,44,36,0) 100%)',
+            }}
           />
 
           {/* Split headline – vaporises letter by letter as the media expands */}
@@ -367,9 +407,9 @@ export default function ScrollExpandMedia({
           </h1>
 
           {/* Eyebrow + scroll prompt */}
-          <div className="pointer-events-none absolute inset-x-0 bottom-8 z-20 flex flex-col items-center gap-3 text-center text-primary/90">
+          <div className="pointer-events-none absolute inset-x-0 bottom-[calc(2rem+min(var(--consent-h,0px),12rem))] z-20 flex flex-col items-center gap-3 text-center text-primary">
             {eyebrow && (
-              <p className="text-sm tracking-wide sm:text-base" style={driftOut(-1)}>
+              <p className="rounded-full bg-black/60 px-4 py-1 text-sm tracking-wide sm:text-base" style={driftOut(-1)}>
                 {eyebrow}
               </p>
             )}
@@ -377,7 +417,7 @@ export default function ScrollExpandMedia({
               <button
                 type="button"
                 onClick={expandNow}
-                className="pointer-events-auto glass inline-flex items-center gap-2 rounded-full !bg-white/15 px-4 py-2 text-sm font-medium text-primary"
+                className="pointer-events-auto glass inline-flex items-center gap-2 rounded-full !bg-black/60 px-4 py-2 text-sm font-medium text-primary"
                 // The prompt is gone within the first few percent of the scrub.
                 style={driftOut(1, 'calc(1 - var(--p) * 6)')}
                 tabIndex={mediaFullyExpanded ? -1 : 0}

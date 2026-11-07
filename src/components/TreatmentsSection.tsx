@@ -86,7 +86,7 @@ function BentoCard({ t, large }: { t: Treatment; large?: boolean }) {
         <span className="grid h-12 w-12 place-items-center rounded-2xl bg-white/60 text-stream-blue ring-1 ring-stream-aqua/30">
           <t.Icon className="h-6 w-6" strokeWidth={1.5} aria-hidden />
         </span>
-        <span className="font-display text-sm text-bark-toned/80" aria-hidden>
+        <span className="font-display text-sm text-bark-toned" aria-hidden>
           {t.num}
         </span>
         <span aria-hidden className="h-px flex-1 bg-gradient-to-l from-stream-aqua/50 to-transparent" />
@@ -94,7 +94,7 @@ function BentoCard({ t, large }: { t: Treatment; large?: boolean }) {
 
       <ul className="mt-6 flex flex-wrap gap-2" aria-label="מאפיינים">
         {t.tags.map((tag) => (
-          <li key={tag} className="rounded-full bg-white/55 px-3 py-1 text-xs text-forest-moss/80 ring-1 ring-stream-aqua/25">
+          <li key={tag} className="rounded-full bg-white/55 px-3 py-1 text-xs text-forest-moss/85 ring-1 ring-stream-aqua/25">
             {tag}
           </li>
         ))}
@@ -106,9 +106,9 @@ function BentoCard({ t, large }: { t: Treatment; large?: boolean }) {
         text={t.title}
         className={cn('mt-5 font-display font-medium text-forest-moss', large ? 'text-3xl md:text-4xl lg:text-[2.1rem]' : 'text-2xl')}
       />
-      <WriteIn delay={0.3} text={t.body} className={cn('mt-3 leading-relaxed text-forest-moss/80', large && 'md:text-lg')} />
+      <WriteIn delay={0.3} text={t.body} className={cn('mt-3 leading-relaxed text-forest-moss/85', large && 'md:text-lg')} />
 
-      <p className="mt-auto pt-6 text-sm text-forest-moss/70">
+      <p className="mt-auto pt-6 text-sm text-forest-moss/85">
         <span className="font-medium text-bark-toned">מתאים ל: </span>
         {t.forWho}
       </p>
@@ -147,7 +147,7 @@ export default function TreatmentsSection() {
           <WriteIn
             delay={0.3}
             text="כל מפגש נבנה סביב מה שנכון לך עכשיו – לפעמים מגע, לפעמים נשימה, ולפעמים פשוט שקט."
-            className="mt-4 text-lg leading-relaxed text-forest-moss/75 lg:mt-0 lg:max-w-md"
+            className="mt-4 text-lg leading-relaxed text-forest-moss/85 lg:mt-0 lg:max-w-md"
           />
         </Reveal>
 

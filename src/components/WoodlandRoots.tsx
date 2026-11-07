@@ -1,5 +1,6 @@
 import { useRef } from 'react'
-import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion'
+import { motion, useScroll, useTransform } from 'framer-motion'
+import { useMotionStopped } from '../lib/a11y'
 
 // ==========================================
 // Roots photo at the bottom of the page | תמונת השורשים בתחתית הדף
@@ -16,13 +17,13 @@ const MELT =
 /** The forest the booking card sits inside, rising behind it and running under the footer to the page bottom. */
 export default function WoodlandRoots() {
   const ref = useRef<HTMLDivElement>(null)
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = useMotionStopped()
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end end'] })
   const y = useTransform(scrollYProgress, [0, 1], [56, 0])
   const scale = useTransform(scrollYProgress, [0, 1], [1.1, 1])
 
   return (
-    <div ref={ref} aria-hidden className="pointer-events-none absolute inset-x-0 -bottom-28 -z-10 h-[39rem] sm:-bottom-20 md:h-[47.5rem]">
+    <div ref={ref} aria-hidden className="pointer-events-none absolute inset-x-0 -bottom-48 -z-10 h-[39rem] sm:-bottom-36 lg:-bottom-20 md:h-[47.5rem]">
       <div className="absolute inset-0 overflow-hidden" style={{ maskImage: MELT, WebkitMaskImage: MELT }}>
         <motion.img
           src={ROOTS_SRC}
@@ -34,7 +35,7 @@ export default function WoodlandRoots() {
           loading="lazy"
           decoding="async"
           className="h-full w-full origin-bottom object-cover object-bottom"
-          style={reduceMotion ? undefined : { y, scale }}
+          style={reduceMotion ? { y: 0, scale: 1 } : { y, scale }}
         />
       </div>
     </div>

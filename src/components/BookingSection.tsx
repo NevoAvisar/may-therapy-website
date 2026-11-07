@@ -51,7 +51,7 @@ function TimeGroup({ label, times, selected, onSelect }: { label: string; times:
   if (times.length === 0) return null
   return (
     <div>
-      <p className="mb-2 text-xs text-forest-moss/60">{label}</p>
+      <p className="mb-2 text-xs text-forest-moss/85">{label}</p>
       <div className="grid grid-cols-4 gap-1.5">
         {times.map((time) => (
           <ChoiceChip key={time} selected={time === selected} onClick={() => onSelect(time)}>
@@ -89,13 +89,13 @@ function CallInfo() {
         text="בואו נמצא זמן"
         className="mt-4 font-display text-3xl font-light text-forest-moss md:text-4xl"
       />
-      <WriteIn delay={0.3} text="בחרו מועד שנוח לכם, ואאשר אותו איתכם בוואטסאפ." className="mt-3 leading-relaxed text-forest-moss/75" />
+      <WriteIn delay={0.3} text="בחרו מועד שנוח לכם, ואאשר אותו איתכם בוואטסאפ." className="mt-3 leading-relaxed text-forest-moss/85" />
 
       <p className="mt-6 inline-flex items-center gap-2 rounded-full bg-stream-blue px-5 py-2 text-sm font-medium text-primary">
         <span className="tabular-nums">{BOOKING.callMinutes} דק׳</span> · ללא עלות
       </p>
-      <p className="mt-3 text-sm leading-relaxed text-forest-moss/75">השיחה אינה כרוכה בתשלום, ונועדה להבין את הצרכים שלכם.</p>
-      <p className="mt-4 text-xs text-forest-moss/60">כל השעות לפי שעון ישראל</p>
+      <p className="mt-3 text-sm leading-relaxed text-forest-moss/85">השיחה אינה כרוכה בתשלום, ונועדה להבין את הצרכים שלכם.</p>
+      <p className="mt-4 text-xs text-forest-moss/85">כל השעות לפי שעון ישראל</p>
     </div>
   )
 }
@@ -164,10 +164,10 @@ function PickStep({ schedule, onTaken, onHeld }: { schedule: Schedule; onTaken: 
               <SlotSummary date={date} />
               <TimeGroup label="בוקר" times={times.filter((t) => t < EVENING_FROM)} selected={time} onSelect={setTime} />
               <TimeGroup label="ערב" times={times.filter((t) => t >= EVENING_FROM)} selected={time} onSelect={setTime} />
-              {times.length === 0 && <p className="text-sm text-forest-moss/60">אין יותר שעות פנויות ביום הזה</p>}
+              {times.length === 0 && <p className="text-sm text-forest-moss/85">אין יותר שעות פנויות ביום הזה</p>}
             </>
           ) : (
-            <p className="m-auto py-6 text-center text-sm text-forest-moss/60">בחרו תאריך כדי לראות את השעות</p>
+            <p className="m-auto py-6 text-center text-sm text-forest-moss/85">בחרו תאריך כדי לראות את השעות</p>
           )}
         </div>
       </div>
@@ -229,7 +229,7 @@ function CalendarStep({ slot, emailSent }: { slot: Slot; emailSent: Promise<bool
       <h2 id="booking-title" className="mt-4 font-display text-3xl font-light text-forest-moss">
         {scheduleConfigured() ? 'המועד נשמר עבורכם' : 'כמעט סיימנו'}
       </h2>
-      <p className="mt-2 text-forest-moss/75">
+      <p className="mt-2 text-forest-moss/85">
         נשאר רק לשלוח לי הודעה בוואטסאפ, ואאשר את השיחה.
         {emailConfirmed && ' שלחתי גם אישור למייל שלכם.'}
       </p>
@@ -308,7 +308,7 @@ export default function BookingSection() {
                 <h2 id="booking-title" className="font-display text-3xl font-light text-forest-moss">
                   היומן לא נטען כרגע
                 </h2>
-                <p className="mt-2 text-forest-moss/75">אפשר לכתוב לי ישירות בוואטסאפ ונמצא זמן יחד.</p>
+                <p className="mt-2 text-forest-moss/85">אפשר לכתוב לי ישירות בוואטסאפ ונמצא זמן יחד.</p>
                 <a
                   href={whatsappUrl}
                   data-sun-beacon
@@ -322,7 +322,7 @@ export default function BookingSection() {
               </div>
             ) : (
               <div className="grid min-h-[26rem] place-items-center">
-                <h2 id="booking-title" className="text-sm text-forest-moss/60">
+                <h2 id="booking-title" className="text-sm text-forest-moss/85">
                   טוענים את היומן…
                 </h2>
               </div>
