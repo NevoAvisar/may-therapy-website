@@ -14,6 +14,9 @@ npm run build    # production build in dist/
 - May's schedule and bookings: admin panel at `/#admin`, stored in Supabase
 - Hero imagery: `src/App.tsx` (drop your own photo in `public/` and point `mediaSrc` at it, e.g. `/tree.jpg`)
 - Colour tokens and the `.glass` utility: `tailwind.config.js`
+- Accessibility widget modes: `src/a11y.css`, saved choices in `src/lib/a11y.ts`. Use `useMotionStopped` (not framer's `useReducedMotion`) for any new animation, so "stop animations" reaches it
+- Legal pages at `/accessibility` and `/privacy`: fill in `LEGAL` in `src/config.ts`. Anything left empty shows there as a marked [להשלמה] gap
+- Analytics: set the IDs in `ANALYTICS` in `src/config.ts`; each tool loads only after the visitor approves its cookies. For any other third-party script, wrap it in `whenConsented('analytics' | 'marketing', load)` from `src/lib/consent.ts`
 - The previous static site is kept in `legacy/` for reference.
 
 ## Connecting Supabase

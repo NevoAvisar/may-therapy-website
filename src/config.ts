@@ -5,8 +5,8 @@
 /* Contact settings – edit here */
 export const CONTACT = {
   // International format, digits only, no "+" or leading 0 (e.g. 972501234567)
-  whatsappNumber: '972504401515',
-  whatsappMessage: 'היי מאי 🌿 הגעתי דרך האתר ואשמח לשמוע עוד על הטיפולים ולתאם שיחת היכרות.',
+  whatsappNumber: '972544532829', // Portfolio demo: routes to MKRA Technology
+  whatsappMessage: 'היי נבו, ראיתי את אתר ההדגמה בתיק העבודות של MKRA Technology ואשמח לשמוע פרטים על בניית אתר דומה לעסק שלי.',
 }
 
 // Booking | תיאום שיחת היכרות
@@ -23,8 +23,9 @@ export const BOOKING = {
     { start: '09:00', end: '12:00' },
     { start: '17:00', end: '20:00' },
   ],
-  // {minutes}, {date} and {time} are filled in by the picker
-  whatsappMessage: 'היי מאי, אשמח לתאם שיחת הכרות של {minutes} דקות בתאריך {date} בשעה {time}.',
+  // {minutes}, {date} and {time} are filled in by the picker. Portfolio demo: the same studio message as CONTACT.
+  // Original: 'היי מאי, אשמח לתאם שיחת הכרות של {minutes} דקות בתאריך {date} בשעה {time}.'
+  whatsappMessage: 'היי נבו, ראיתי את אתר ההדגמה בתיק העבודות של MKRA Technology ואשמח לשמוע פרטים על בניית אתר דומה לעסק שלי.',
   eventTitle: 'שיחת היכרות עם מאי',
   eventDetails: 'המועד ממתין לאישור של מאי בוואטסאפ.',
 }
@@ -48,6 +49,29 @@ export const EMAILJS = {
   serviceId: '',
   templateToMay: '',
   templateToClient: '',
+}
+
+// Analytics | סטטיסטיקה ושיווק
+/*
+ * Fill in an ID to turn a tool on (e.g. 'G-XXXXXXXXXX' and the numeric pixel ID). Each one then loads only for
+ * visitors who approve its cookies, through src/lib/trackers.ts.
+ */
+export const ANALYTICS = {
+  googleAnalyticsId: '',
+  metaPixelId: '',
+}
+
+// Legal pages | דפי הצהרת הנגישות ומדיניות הפרטיות
+/* Shown on /accessibility and /privacy. Anything left empty appears there as a marked [להשלמה] gap. */
+export const LEGAL = {
+  lastUpdated: '7 בנובמבר 2026',
+  ownerName: '',
+  privacyEmail: '',
+  coordinatorName: '',
+  coordinatorPhone: '',
+  coordinatorEmail: '',
+  // The clinic: parking, entrance, steps or lift, toilets, any other arrangements
+  physicalAccess: '',
 }
 
 // Link helpers | יצירת קישורים

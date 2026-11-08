@@ -38,7 +38,7 @@ export default function MonthCalendar({ today, initialDate, selected, isEnabled,
         </button>
       </div>
 
-      <div aria-hidden className="mt-3 grid grid-cols-7 text-center text-xs text-forest-moss/60">
+      <div aria-hidden className="mt-3 grid grid-cols-7 text-center text-xs text-forest-moss/85">
         {WEEKDAYS.map((day) => (
           <span key={day}>{day}</span>
         ))}

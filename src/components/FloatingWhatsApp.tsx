@@ -11,10 +11,11 @@ export default function FloatingWhatsApp({ visible = true }: { visible?: boolean
         <motion.a
           href={whatsappUrl}
           data-sun-beacon
+          data-surface
           target="_blank"
           rel="noopener noreferrer"
           aria-label="שליחת הודעה בוואטסאפ"
-          className="fixed bottom-5 left-5 z-50 grid h-14 w-14 place-items-center rounded-full bg-stream-blue text-primary shadow-bloom"
+          className="fixed bottom-[calc(1.25rem+var(--consent-h,0px))] left-5 z-50 grid h-14 w-14 place-items-center rounded-full bg-stream-blue text-primary shadow-bloom"
           initial={{ opacity: 0, scale: 0.6, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.6, y: 20 }}

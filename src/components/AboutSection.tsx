@@ -22,9 +22,9 @@ export default function AboutSection() {
       <div className="page-container max-w-5xl">
         <Reveal>
           {/* Floating frosted card */}
-          <article className="glass relative grid items-center gap-10 rounded-[36px] p-8 shadow-[inset_0_1px_0_rgba(255,255,255,0.55),0_40px_80px_-40px_rgba(62,84,69,0.45)] md:grid-cols-[auto_1fr] md:gap-14 md:p-14">
+          <article data-stack-large-text className="glass relative grid grid-cols-[minmax(0,1fr)] items-center gap-10 rounded-[36px] p-8 shadow-[inset_0_1px_0_rgba(255,255,255,0.55),0_40px_80px_-40px_rgba(62,84,69,0.45)] md:grid-cols-[auto_1fr] md:gap-14 md:p-14">
             {/* Round portrait inside a soft, organic ring */}
-            <div className="relative mx-auto h-44 w-44 md:h-56 md:w-56">
+            <div className="relative mx-auto aspect-square w-44 max-w-full md:w-56">
               <span
                 aria-hidden
                 className="absolute -inset-3 rotate-12 border border-stream-aqua/50"
@@ -57,21 +57,21 @@ export default function AboutSection() {
                 text="נעים להכיר, אני מאי"
                 className="mt-4 font-display text-4xl font-light text-forest-moss md:text-5xl"
               />
-              <div className="mt-5 space-y-4 text-lg leading-relaxed text-forest-moss/80">
+              <div className="mt-5 space-y-4 text-lg leading-relaxed text-forest-moss/85">
                 <WriteIn delay={0.3} text="הדרך שלי לטיפול התחילה כשהגוף שלי ביקש ממני לעצור ולהקשיב. גיליתי שכשנותנים לו מקום – הוא יודע לספר מה הוא צריך, הרבה לפני שהמילים מגיעות." />
                 <WriteIn delay={0.6} text="היום אני מלווה אנשים לחזור לקרקע: דרך מגע קשוב, נשימה ומודעות גופנית עדינה. אני מאמינה שאין צורך להילחם במה שכבד, אלא לפנות לו מקום – בקצב שלך, בביטחון ובהקשבה מלאה." />
               </div>
 
               <ul className="mt-7 flex flex-wrap justify-center gap-2 md:justify-start" aria-label="הגישה שלי">
                 {VALUES.map((v) => (
-                  <li key={v} className="rounded-full bg-white/55 px-4 py-1.5 text-sm text-forest-moss/80 ring-1 ring-stream-aqua/25">
+                  <li key={v} className="rounded-full bg-white/55 px-4 py-1.5 text-sm text-forest-moss/85 ring-1 ring-stream-aqua/25">
                     {v}
                   </li>
                 ))}
               </ul>
 
               <p className="mt-7 font-display text-xl text-forest-moss">
-                מאי <span className="text-base text-forest-moss/60">· מטפלת במגע ובאיזון גוף-נפש</span>
+                מאי <span className="text-base text-forest-moss/85">· מטפלת במגע ובאיזון גוף-נפש</span>
               </p>
             </div>
           </article>

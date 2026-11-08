@@ -89,7 +89,7 @@ function BookingsList({ bookings, onRelease }: { bookings: Booking[]; onRelease:
   return (
     <section className={card}>
       <h2 className={heading}>שיחות קרובות</h2>
-      {bookings.length === 0 && <p className="mt-3 text-forest-moss/70">אין כרגע שיחות שנקבעו.</p>}
+      {bookings.length === 0 && <p className="mt-3 text-forest-moss/85">אין כרגע שיחות שנקבעו.</p>}
       <ul className="mt-4 divide-y divide-stream-aqua/30">
         {bookings.map((booking) => {
           const { date, time } = clinicSlot(booking.start_at)
@@ -99,7 +99,7 @@ function BookingsList({ bookings, onRelease }: { bookings: Booking[]; onRelease:
                 <p className="font-medium">
                   {formatLongDate(date)} · <span className="tabular-nums">{time}</span>
                 </p>
-                <p className="text-sm text-forest-moss/75">
+                <p className="text-sm text-forest-moss/85">
                   {booking.name} · <span dir="ltr">{booking.email}</span>
                 </p>
               </div>
@@ -175,7 +175,7 @@ function DayManager({ schedule, today, run }: { schedule: Schedule; today: strin
             </button>
           </div>
 
-          {slots.length === 0 && <p className="text-sm text-forest-moss/70">{dayOpen ? 'אין שעות ביום הזה.' : 'היום הזה סגור.'}</p>}
+          {slots.length === 0 && <p className="text-sm text-forest-moss/85">{dayOpen ? 'אין שעות ביום הזה.' : 'היום הזה סגור.'}</p>}
 
           <div className="grid grid-cols-4 gap-1.5">
             {slots.map((slot) => (
@@ -190,7 +190,7 @@ function DayManager({ schedule, today, run }: { schedule: Schedule; today: strin
                   'rounded-full py-2 text-sm tabular-nums ring-1 transition',
                   slot.isBooked && 'bg-flower-bloom/70 text-forest-moss ring-flower-bloom',
                   !slot.isBooked && slot.isOpen && 'bg-stream-blue text-primary ring-stream-blue hover:bg-forest-moss',
-                  !slot.isBooked && !slot.isOpen && 'bg-primary/70 text-forest-moss/50 line-through ring-stream-aqua/40 hover:bg-river-mist',
+                  !slot.isBooked && !slot.isOpen && 'bg-primary/70 text-forest-moss/85 line-through ring-stream-aqua/40 hover:bg-river-mist',
                 )}
               >
                 {slot.time}
@@ -198,7 +198,7 @@ function DayManager({ schedule, today, run }: { schedule: Schedule; today: strin
             ))}
           </div>
 
-          {slots.length > 0 && <p className="text-xs text-forest-moss/60">ירוק: פתוח · מחוק: סגור · ורוד: תפוס. לחיצה על שעה מחליפה את המצב.</p>}
+          {slots.length > 0 && <p className="text-xs text-forest-moss/85">ירוק: פתוח · מחוק: סגור · ורוד: תפוס. לחיצה על שעה מחליפה את המצב.</p>}
 
           <form onSubmit={addCustom} className="flex items-end gap-2">
             <div className="flex-1">
@@ -355,7 +355,7 @@ export default function AdminPanel() {
       <Page>
         <section className={cn(card, 'mx-auto mt-16 max-w-md')}>
           <h1 className={heading}>ניהול היומן עדיין לא מחובר</h1>
-          <p className="mt-2 text-forest-moss/75">צריך לחבר את Supabase לפי ההוראות ב־README.</p>
+          <p className="mt-2 text-forest-moss/85">צריך לחבר את Supabase לפי ההוראות ב־README.</p>
         </section>
       </Page>
     )

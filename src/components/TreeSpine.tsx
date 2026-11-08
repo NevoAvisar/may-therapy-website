@@ -2,12 +2,12 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   motion,
   useMotionValueEvent,
-  useReducedMotion,
   useScroll,
   useSpring,
   useTransform,
   type MotionValue,
 } from 'framer-motion'
+import { useMotionStopped } from '../lib/a11y'
 
 // ==========================================
 // Tree spine along the page edge | גזע העץ בצד הדף
@@ -66,7 +66,7 @@ const ROOTS = [
 type Mark = { id: string; at: number }
 
 export default function TreeSpine({ bloomAt, rootsAt, visible = true }: TreeSpineProps) {
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = useMotionStopped()
   const { scrollYProgress } = useScroll()
   const eased = useSpring(scrollYProgress, { stiffness: 90, damping: 24, restDelta: 0.0005 })
   const progress = reduceMotion ? scrollYProgress : eased

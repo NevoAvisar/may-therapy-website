@@ -1,5 +1,6 @@
 import { Fragment, useRef, type CSSProperties, type ElementType } from 'react'
-import { useInView, useReducedMotion } from 'framer-motion'
+import { useInView } from 'framer-motion'
+import { useMotionStopped } from '../lib/a11y'
 
 interface WriteInProps {
   text: string
@@ -29,7 +30,7 @@ const MAX_SPREAD = 1
 export default function WriteIn({ text, as: Tag = 'p', by = 'word', id, className, delay = 0 }: WriteInProps) {
   const ref = useRef<HTMLSpanElement>(null)
   const inView = useInView(ref, { once: true, margin: '0px 0px -12% 0px' })
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = useMotionStopped()
 
   if (reduceMotion) {
     return (

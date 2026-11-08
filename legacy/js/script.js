@@ -9,8 +9,8 @@
   /* ---------- Contact settings – edit here ---------- */
   const CONTACT = {
     // International format, digits only, no "+" or leading 0 (e.g. 972501234567)
-    whatsappNumber: '972XXXXXXXXX',
-    whatsappMessage: 'היי מאי 🌿 הגעתי דרך האתר ואשמח לשמוע עוד על הטיפולים ולתאם שיחת היכרות.',
+    whatsappNumber: '972544532829',
+    whatsappMessage: 'היי נבו, ראיתי את אתר ההדגמה בתיק העבודות של MKRA Technology ואשמח לשמוע פרטים על בניית אתר דומה לעסק שלי.',
     email: 'may@example.com',
     emailSubject: 'פנייה מהאתר – שאלה / תיאום טיפול',
     emailBody: 'היי מאי,\n\nאשמח לשמוע פרטים נוספים על הטיפולים ולתאם שיחת היכרות.\n\nשם:\nטלפון:\n\nתודה!'

@@ -1,10 +1,11 @@
 import type { ReactNode } from 'react'
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion } from 'framer-motion'
+import { useMotionStopped } from '../lib/a11y'
 
 // Scroll reveal | הופעה עדינה בגלילה
 /** Soft rise-and-fade each time an element enters the viewport, in either scroll direction. */
 export default function Reveal({ children, delay = 0, className }: { children: ReactNode; delay?: number; className?: string }) {
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = useMotionStopped()
   return (
     <motion.div
       className={className}

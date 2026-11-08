@@ -14,10 +14,10 @@ export default {
         primary: '#F6F4F0', // warm natural linen / sand
         'river-mist': '#DCE8E3', // delicate mineral water mist
         'stream-aqua': '#9AB6AB', // gentle river aqua
-        'stream-blue': '#5E8079', // calm river teal – CTAs & focus
+        'stream-blue': '#4B6A63', // calm river teal – CTAs & focus
         'forest-moss': '#3E5445', // deep woodland green – typography
         'sage-leaf': '#8EA691', // soft pastel foliage
-        'bark-toned': '#7F6A58', // warm bark accent
+        'bark-toned': '#6C5A4B', // warm bark accent
         'flower-bloom': '#E8C5C8', // soft pastel blossom pink
         'flower-center': '#F5E5C9', // warm petal core
         // Section backgrounds, top to bottom of the page

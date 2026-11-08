@@ -1,6 +1,7 @@
 import Lenis from 'lenis'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { motionStopped } from './a11y'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -53,8 +54,7 @@ const sectionTop = (el: Element) => el.getBoundingClientRect().top + window.scro
 export function scrollToTarget(target: number | Element) {
   const y = typeof target === 'number' ? target : sectionTop(target)
   if (!lenis) {
-    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
-    window.scrollTo({ top: y, behavior: reduce ? 'auto' : 'smooth' })
+    window.scrollTo({ top: y, behavior: motionStopped() ? 'auto' : 'smooth' })
     return
   }
   const screens = Math.abs(y - window.scrollY) / window.innerHeight
@@ -63,7 +63,7 @@ export function scrollToTarget(target: number | Element) {
 
 /** Starts Lenis and the pause at each of `pauseAt` (section ids). Returns a cleanup | מפעיל את Lenis ואת העצירה באזורים שהועברו, ומחזיר פונקציית ניקוי */
 export function initSmoothScroll(pauseAt: string[]) {
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return () => {}
+  if (motionStopped()) return () => {}
 
   // ------------------------------------------
   // Pause state | מצב העצירה

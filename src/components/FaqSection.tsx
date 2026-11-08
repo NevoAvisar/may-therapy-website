@@ -71,7 +71,7 @@ function FaqItem({ q, a, open, onToggle }: { q: string; a: string; open: boolean
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.4, ease: [0.22, 0.61, 0.36, 1] }}
           >
-            <p className="px-6 pb-5 leading-relaxed text-forest-moss/80 md:px-8">{a}</p>
+            <p className="px-6 pb-5 leading-relaxed text-forest-moss/85 md:px-8">{a}</p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -100,7 +100,7 @@ export default function FaqSection() {
             text="לפני שנפגשים"
             className="mt-2 font-display text-4xl font-light text-forest-moss md:text-5xl"
           />
-          <WriteIn delay={0.3} text="כמה דברים שכדאי לדעת – ואם נשארה שאלה, אני כאן." className="mt-2 text-lg text-forest-moss/75" />
+          <WriteIn delay={0.3} text="כמה דברים שכדאי לדעת – ואם נשארה שאלה, אני כאן." className="mt-2 text-lg text-forest-moss/85" />
         </Reveal>
 
         <div className="mt-7 flex flex-col gap-2.5">

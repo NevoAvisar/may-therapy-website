@@ -1,4 +1,4 @@
-import { useEffect, useState, type MouseEvent } from 'react'
+import { useEffect, useRef, useState, type MouseEvent } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Menu, X } from 'lucide-react'
 import { goToSection } from '../config'
@@ -67,6 +67,18 @@ function BookingLink({ onClick, active, className }: { onClick: (e: MouseEvent) 
 export default function Navbar() {
   const active = useActiveSection(ids)
   const [menuOpen, setMenuOpen] = useState(false)
+  const menuButtonRef = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    if (!menuOpen) return
+    const closeOnEscape = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      setMenuOpen(false)
+      menuButtonRef.current?.focus()
+    }
+    document.addEventListener('keydown', closeOnEscape)
+    return () => document.removeEventListener('keydown', closeOnEscape)
+  }, [menuOpen])
 
   const go = (id: string) => (e: MouseEvent) => {
     e.preventDefault()
@@ -79,13 +91,13 @@ export default function Navbar() {
   return (
     <header className="fixed inset-x-0 top-3 z-50 flex justify-center px-4">
       <nav aria-label="ניווט ראשי" className="relative w-full max-w-4xl">
-        <div className="glass flex items-center justify-between gap-2 rounded-full !bg-primary/60 py-1.5 pe-1.5 ps-5">
+        <div data-surface className="glass flex items-center justify-between gap-2 rounded-full !bg-primary/90 py-1.5 pe-1.5 ps-5">
           <a href="#top" onClick={go('hero')} className="font-display text-2xl font-medium text-forest-moss">
             מאי
           </a>
 
           {/* Tablet and desktop: all links in a row | טאבלט ומחשב: כל הקישורים בשורה אחת */}
-          <ul className="hidden items-center gap-0.5 md:flex">
+          <ul data-nav-row className="hidden items-center gap-0.5 md:flex">
             {LINKS.map((link) => (
               <li key={link.id} className="relative">
                 <a
@@ -94,7 +106,7 @@ export default function Navbar() {
                   aria-current={active === link.id || undefined}
                   className={cn(
                     'relative z-10 block whitespace-nowrap rounded-full px-3.5 py-2 text-sm transition-colors lg:px-4',
-                    active === link.id ? 'text-forest-moss' : 'text-forest-moss/70 hover:text-forest-moss',
+                    active === link.id ? 'text-forest-moss' : 'text-forest-moss/85 hover:text-forest-moss',
                   )}
                 >
                   {link.label}
@@ -114,9 +126,10 @@ export default function Navbar() {
           </ul>
 
           {/* Phone: booking button and a compact menu | טלפון: כפתור תיאום ותפריט מצומצם */}
-          <div className="flex items-center gap-1.5 md:hidden">
+          <div data-nav-compact className="flex items-center gap-1.5 md:hidden">
             <BookingLink onClick={go(BOOKING.id)} active={active === BOOKING.id} className="px-4" />
             <button
+              ref={menuButtonRef}
               type="button"
               aria-expanded={menuOpen}
               aria-controls="site-menu"
@@ -130,7 +143,7 @@ export default function Navbar() {
         </div>
 
         {menuOpen && (
-          <ul id="site-menu" className="glass mt-2 flex flex-col gap-1 rounded-3xl !bg-primary/90 p-2 md:hidden">
+          <ul id="site-menu" data-nav-compact data-surface className="glass mt-2 flex flex-col gap-1 rounded-3xl !bg-primary/90 p-2 md:hidden">
             {[...LINKS, BOOKING].map((link) => (
               <li key={link.id}>
                 <a
